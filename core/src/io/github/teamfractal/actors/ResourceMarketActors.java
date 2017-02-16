@@ -56,9 +56,6 @@ public class ResourceMarketActors extends Table {
 	private Texture backgroundImage;
 	private SpriteBatch batch;
 	
-
-	private Texture backgroundImage;
-	private SpriteBatch batch;
 	
 	/**
 	 * Initialise market actors.
