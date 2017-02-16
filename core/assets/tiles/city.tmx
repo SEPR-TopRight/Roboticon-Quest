@@ -227,6 +227,9 @@
   <tile id="3">
    <image width="100" height="65" source="city/roboticon/ore.png"/>
   </tile>
+  <tile id="4">
+   <image width="100" height="65" source="city/roboticon/food.png"/>
+  </tile>
  </tileset>
  <layer name="MapData" width="7" height="12">
   <data encoding="csv">
