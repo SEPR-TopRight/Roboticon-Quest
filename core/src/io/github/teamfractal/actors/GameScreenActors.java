@@ -1,5 +1,8 @@
 package io.github.teamfractal.actors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -38,7 +41,8 @@ public class GameScreenActors {
 	private TextButton nextButton;
 	private boolean dropDownActive;
 	private boolean listUpdated;
-
+	private Texture backgroundImage;
+	private SpriteBatch batch;
 	/**
 	 * Initialise the main game screen components.
 	 * @param game         The game manager {@link RoboticonQuest}
@@ -48,6 +52,21 @@ public class GameScreenActors {
 		this.game = game;
 		this.screen = screen;
 		this.stage = screen.getStage();
+
+		//Added by Christian Beddows
+		batch = (SpriteBatch) game.getBatch();
+		backgroundImage = new Texture(Gdx.files.internal("background/space-stars1080.png"));
+
+	}
+
+	/**
+	 * Method to draw the background to the resource market
+	 * by Christian Beddows
+	 */
+	public void drawBackground() {
+		batch.begin();
+		batch.draw(backgroundImage, 0, 0);
+		batch.end();
 	}
 
 	/**
@@ -138,13 +157,13 @@ public class GameScreenActors {
 				if (player.purchaseLandPlot(selectedPlot)) {
 					//Added a random event where the player finds a chest containing money - Christian Beddows
 					if (RandomEvents.tileHasChest()){
-						int playerTreasure = RandomEvents.treasureChest(game);
+						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(game);
 						stage.addActor(new MessagePopUp("You found a treasure chest!","On your new tile you "
 								+ "find a buried treasure chest containing " + Integer.toString(playerTreasure) + " money!"));
 					}
 					//Added a random event where you disturb a flock of geese on a plot - Ben
-					if (RandomEvents.GeeseAttack()){
-						int food = RandomEvents.Geese(game);
+					if (RandomEvents.geeseAttack()){
+						int food = RandomEvents.geese(game);
 						stage.addActor(new MessagePopUp("Disturbed a flock of Geese!","On your new tile you "
 								+ "discover a flock of geese they attack!, you lost " + Integer.toString(food) + " food!"));
 					}

@@ -2,6 +2,7 @@ package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,6 +38,9 @@ public class RoboticonMarketActors extends Table {
 	private static final Texture food_texture;
 	private static final Texture no_robotic_texture;
 
+	private Texture backgroundImage;
+	private SpriteBatch batch;
+
 	private ArrayList<Roboticon> roboticons = new ArrayList<Roboticon>();
 
 	static {
@@ -58,7 +62,11 @@ public class RoboticonMarketActors extends Table {
 		this.marketStats = new Label("", game.skin);
 
 		widgetUpdate();
-		
+
+		//Added by Christian Beddows
+		batch = (SpriteBatch) game.getBatch();
+		backgroundImage = new Texture(Gdx.files.internal("background/factory.png"));
+
 		// Added by Josh Neil so players can make the market produce a roboticon
 		final TextButton produceRoboticonButton = new TextButton("Produce roboticon", game.skin);
 		produceRoboticonButton.addListener(new ChangeListener() {
@@ -285,6 +293,16 @@ public class RoboticonMarketActors extends Table {
 		
 	
 
+	}
+
+	/**
+	 * Method to draw the background to the resource market
+	 * by Christian Beddows
+	 */
+	public void drawBackground() {
+		batch.begin();
+		batch.draw(backgroundImage, 0, 0);
+		batch.end();
 	}
 
 	public String padZero(int number, int length) {

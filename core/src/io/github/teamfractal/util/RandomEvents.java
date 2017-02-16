@@ -30,7 +30,7 @@ public class RandomEvents {
 	 * Returns a boolean value that states whether or not Geese have attacked a players food.
 	 * @return A boolean value that states whether or not Geese have attacked a players food.
 	 */
-	public static boolean GeeseAttack(){
+	public static boolean geeseAttack(){
 		return Math.random() >= 0.9;
 	}
 	
@@ -39,7 +39,7 @@ public class RandomEvents {
 	 * increase the player's balance by this amount.
 	 * @return An integer representing the amount of treasure found in a chest.
 	 */
-	public static int treasureChest(RoboticonQuest game){
+	public static int amountOfMoneyInTreasureChest(RoboticonQuest game){
 		int treasure = (int)(Math.random()*40)+10;
 		int balance = game.getPlayer().getMoney();
 		game.getPlayer().setMoney(balance+treasure);
@@ -50,9 +50,9 @@ public class RandomEvents {
 	 * halves the amount of food a player has.
 	 * @return An integer representing the amount of food lost.
 	 */
-	public static int Geese(RoboticonQuest game){
+	public static int geese(RoboticonQuest game){
 		int food = game.getPlayer().getFood();
-		game.getPlayer().setFood(food/2);
+		game.getPlayer().setFood(food - food/2);
 		return (food/2);
 	}
 	

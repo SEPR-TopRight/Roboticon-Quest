@@ -1,7 +1,9 @@
 package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -11,12 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.teamfractal.RoboticonQuest;
+import io.github.teamfractal.util.GameMusic;
 
 
 public class HomeMainMenu extends Table {
 	private RoboticonQuest game;
 	private TextButton btnNewGame;
 	private TextButton btnExit;
+	private Texture backgroundImage;
+	private SpriteBatch batch;
 
 	private static Texture titleTexture = new Texture(Gdx.files.internal("roboticon_images/Roboticon_Quest_Title"));
 
@@ -26,6 +31,10 @@ public class HomeMainMenu extends Table {
 	 */
 	public HomeMainMenu(RoboticonQuest game) {
 		this.game = game;
+
+		//Added by Christian Beddows
+		batch = (SpriteBatch) game.getBatch();
+		backgroundImage = new Texture(Gdx.files.internal("background/corridor.png"));
 
 		// Create UI Components
 		final Image imgTitle = new Image();
@@ -47,6 +56,16 @@ public class HomeMainMenu extends Table {
 		add(btnNewGame).pad(5);
 		row();
 		add(btnExit).pad(5);
+	}
+
+	/**
+	 * Method to draw the background to the resource market
+	 * by Christian Beddows
+	 */
+	public void drawBackground() {
+		batch.begin();
+		batch.draw(backgroundImage, 0, 0);
+		batch.end();
 	}
 
 	/**

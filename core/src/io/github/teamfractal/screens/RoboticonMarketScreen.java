@@ -26,6 +26,7 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 		table.setFillParent(true);
 		
 		actors = new RoboticonMarketActors(game, this, market);
+
 		table.top().left().add(actors);
 		
 		stage.addActor(table);
@@ -39,7 +40,9 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	
+
+		actors.drawBackground();
+
 		stage.act(delta);
 		stage.draw();
 

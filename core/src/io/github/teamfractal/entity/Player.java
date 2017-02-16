@@ -46,7 +46,7 @@ public class Player {
 	 */
 	public synchronized void setMoney(int money) throws IllegalArgumentException {
 		if (money < 0) {
-			throw new IllegalArgumentException("Error: Money can't be negative.");
+			throw new IllegalArgumentException("Error: Money can't be negative."); //My bank account would disagree
 		}
 
 		this.money = money;
@@ -221,6 +221,32 @@ public class Player {
 		setResource(resource, getResource(resource) + amount);
 		return PurchaseStatus.Success;
 	}
+	
+	
+	// Added by Josh Neil so that players can sell to other players
+	/**
+	 * Allows players to sell a given quantity of a given resource to another player for a given price
+	 * @param buyingPlayer
+	 * @param quantity
+	 * @param resource
+	 * @param pricePerUnit
+	 * @return
+	 */
+	public PurchaseStatus sellResourceToPlayer(Player buyingPlayer,int quantity, ResourceType resource, int pricePerUnit) {
+		int totalCost = quantity * pricePerUnit;
+		if(getResource(resource) < quantity){
+			return PurchaseStatus.FailPlayerNotEnoughResource;
+		}
+		else if(buyingPlayer.getMoney() < totalCost){
+			return PurchaseStatus.FailPlayerNotEnoughMoney;
+		}
+
+		setMoney(totalCost + getMoney());
+		setResource(resource, getResource(resource) - quantity);
+		buyingPlayer.setMoney(buyingPlayer.getMoney() - totalCost);
+		buyingPlayer.setResource(resource, buyingPlayer.getResource(resource) + quantity);
+		return PurchaseStatus.Success;
+	}
 
 	/**
 	 * Action for player to sell resources to the market.
@@ -265,6 +291,9 @@ public class Player {
 		game.landPurchasedThisTurn();
 		return true;
 	}
+	
+	// Marked as deprecated by Josh Neil as it is no longer in use (generate resources is used instead)
+	@Deprecated
 	/**
 	 * Get a landplot to produce resources
 	 */
@@ -306,10 +335,11 @@ public class Player {
 	 */
 	public void removeLandPlot(LandPlot landPlot) {
 		if (landPlot != null && landList.contains(landPlot) && landPlot.getOwner() == this) {
-			landList.add(landPlot);
+			landList.remove(landPlot);
 		}
 	}
 
+	// No longer used but left here in case it is needed for future modifications/extensions!
 	/**
 	 * Get a string list of roboticons available for the player.
 	 * Mainly for the dropdown selection.
@@ -442,7 +472,9 @@ public class Player {
 	 * @return The player's score
 	 */
 	public int getScore(){
-		int score = getMoney() + (getResource(ENERGY)*18) + (getResource(ORE)*9) + (getResource(FOOD)*27);
+		int score = getMoney() + (getResource(ENERGY)*game.market.getSellPrice(ENERGY)) + 
+				(getResource(ORE)*game.market.getSellPrice(ORE)) + 
+				(getResource(FOOD)*game.market.getSellPrice(FOOD));
 		return score;
 	}
 }
