@@ -38,8 +38,10 @@ public class RoboticonMarketActors extends Table {
 	private static final Texture food_texture;
 	private static final Texture no_robotic_texture;
 
-	private Texture backgroundImage;
+	private Image backgroundImage;
 	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
 
 	private ArrayList<Roboticon> roboticons = new ArrayList<Roboticon>();
 
@@ -65,7 +67,7 @@ public class RoboticonMarketActors extends Table {
 
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Texture(Gdx.files.internal("background/factory.png"));
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/factory.jpg")));
 
 		// Added by Josh Neil so players can make the market produce a roboticon
 		final TextButton produceRoboticonButton = new TextButton("Produce roboticon", game.skin);
@@ -301,8 +303,14 @@ public class RoboticonMarketActors extends Table {
 	 */
 	public void drawBackground() {
 		batch.begin();
-		batch.draw(backgroundImage, 0, 0);
+		backgroundImage.draw(batch, 1);
 		batch.end();
+	}
+
+	public void resizeScreen(float width, float height) {
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 	}
 
 	public String padZero(int number, int length) {

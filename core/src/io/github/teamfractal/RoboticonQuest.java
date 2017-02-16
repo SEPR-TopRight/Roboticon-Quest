@@ -79,6 +79,7 @@ public class RoboticonQuest extends Game {
 	private void startMusic(){
 		gameMusic = new GameMusic();
 		gameMusic.play();
+		gameMusic.setLooping(true);
 	}
 	/**
 	 * Setup the default skin for GUI components.

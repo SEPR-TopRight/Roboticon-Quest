@@ -54,6 +54,7 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 		stage.getViewport().update(width, height, true);
 		game.getBatch().setProjectionMatrix(stage.getCamera().combined);
 		actors.widgetUpdate();
+		actors.resizeScreen(width, height);
 	}
 
 	@Override
