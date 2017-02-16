@@ -218,4 +218,177 @@ public class MarketTest {
 		market.attemptToProduceRoboticon();
 		assertEquals(oreBefore,market.getOre());
 	}
+	
+	/**
+	 * Tests {@link Market#buyResource(ResourceType, int)} 
+	 * ensures that three ore are added to the market when called with ResourceType.ORE and 3
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testBuyThreeOre(){
+		int oreBefore = market.getResource(ResourceType.ORE);
+		
+		market.buyResource(ResourceType.ORE, 3);
+		
+		assertEquals(oreBefore+3,market.getResource(ResourceType.ORE));
+	}
+	
+	/**
+	 * Tests {@link Market#buyResource(ResourceType, int)} 
+	 * ensures that one ore is added to the market when called with ResourceType.ORE and 1
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testBuyOneOre(){
+		int oreBefore = market.getResource(ResourceType.ORE);
+		
+		market.buyResource(ResourceType.ORE, 1);
+		
+		assertEquals(oreBefore+1,market.getResource(ResourceType.ORE));
+	}
+	
+	/**
+	 * Tests {@link Market#buyResource(ResourceType, int)} 
+	 * ensures that five energy are added to the market when called with ResourceType.ENERGY and 5
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testBuyFiveEnergy(){
+		int energyBefore = market.getResource(ResourceType.ENERGY);
+		
+		market.buyResource(ResourceType.ENERGY, 5);
+		
+		assertEquals(energyBefore+5,market.getResource(ResourceType.ENERGY));
+	}
+	
+	/**
+	 * Tests {@link Market#buyResource(ResourceType, int)} 
+	 * ensures that one energy is added to the market when called with ResourceType.ENERGY and 1
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testBuyOneEnergy(){
+		int energyBefore = market.getResource(ResourceType.ENERGY);
+		
+		market.buyResource(ResourceType.ENERGY, 1);
+		
+		assertEquals(energyBefore+1,market.getResource(ResourceType.ENERGY));
+	}
+	
+	/**
+	 * Tests {@link Market#buyResource(ResourceType, int)} 
+	 * ensures that four food are added to the market when called with ResourceType.FOOD and 4
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testBuyFourFood(){
+		int foodBefore = market.getResource(ResourceType.FOOD);
+		
+		market.buyResource(ResourceType.FOOD, 4);
+		
+		assertEquals(foodBefore+4,market.getResource(ResourceType.FOOD));
+	}
+	
+	/**
+	 * Tests {@link Market#buyResource(ResourceType, int)} 
+	 * ensures that one food is added to the market when called with ResourceType.FOOD and 1
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testBuyOneFood(){
+		int foodBefore = market.getResource(ResourceType.FOOD);
+		
+		market.buyResource(ResourceType.FOOD, 1);
+		
+		assertEquals(foodBefore+1,market.getResource(ResourceType.FOOD));
+	}
+	
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} 
+	 * ensures that three ore are removed from the market when called with ResourceType.ORE and 3
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testSellThreeOre(){
+		
+		// Start the market off with enough ore
+		market.setResource(ResourceType.ORE, 5);
+		int oreBefore = market.getResource(ResourceType.ORE);
+		
+		market.sellResource(ResourceType.ORE, 3);
+		
+		assertEquals(oreBefore-3,market.getResource(ResourceType.ORE));
+	}
+	
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} 
+	 * ensures that one ore is removed from the market when called with ResourceType.ORE and 1
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testSellOneOre(){
+		// Start the market off with enough ore
+		market.setResource(ResourceType.ORE, 5);
+		int oreBefore = market.getResource(ResourceType.ORE);
+		
+		market.sellResource(ResourceType.ORE, 1);
+		
+		assertEquals(oreBefore-1,market.getResource(ResourceType.ORE));
+	}
+	
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} 
+	 * ensures that five energy are removed from the market when called with ResourceType.ENERGY and 5
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testSellFiveEnergy(){
+		int energyBefore = market.getResource(ResourceType.ENERGY);
+		
+		market.sellResource(ResourceType.ENERGY, 5);
+		
+		assertEquals(energyBefore-5,market.getResource(ResourceType.ENERGY));
+	}
+	
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} 
+	 * ensures that one energy is removed from the market when called with ResourceType.ENERGY and 1
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testSellOneEnergy(){
+		int energyBefore = market.getResource(ResourceType.ENERGY);
+		
+		market.sellResource(ResourceType.ENERGY, 1);
+		
+		assertEquals(energyBefore-1,market.getResource(ResourceType.ENERGY));
+	}
+	
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} 
+	 * ensures that four food are removed from the market when called with ResourceType.FOOD and 4
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testSellFourFood(){
+		int foodBefore = market.getResource(ResourceType.FOOD);
+		
+		market.sellResource(ResourceType.FOOD, 4);
+		
+		assertEquals(foodBefore-4,market.getResource(ResourceType.FOOD));
+	}
+	
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} 
+	 * ensures that one food is removed from the market when called with ResourceType.FOOD and 1
+	 * as it is simply a wrapper for setResource only a few simple tests are needed
+	 */
+	@Test
+	public void testSellOneFood(){
+		int foodBefore = market.getResource(ResourceType.FOOD);
+		
+		market.sellResource(ResourceType.FOOD, 1);
+		
+		assertEquals(foodBefore-1,market.getResource(ResourceType.FOOD));
+	}
 }

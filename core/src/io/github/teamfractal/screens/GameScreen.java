@@ -1,11 +1,14 @@
 package io.github.teamfractal.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricStaggeredTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -43,6 +46,10 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private float maxDragX;
 	private float maxDragY;
 	private TiledMapTileSets tiles;
+	
+	private Texture backgroundImage = new Texture(Gdx.files.internal("background/newbg.png"));
+	private TextureRegion region =
+		    new TextureRegion(backgroundImage, 0, 0, 800, 420);
 
 	public LandPlot getSelectedPlot() {
 		return selectedPlot;
@@ -53,6 +60,8 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	 * @param game  The game object
 	 */
 	public GameScreen(final RoboticonQuest game) {
+		
+		
 		oldW = Gdx.graphics.getWidth();
 		oldH = Gdx.graphics.getHeight();
 
@@ -224,7 +233,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		// Setup the game board.
 		if (tmx != null) tmx.dispose();
 		if (renderer != null) renderer.dispose();
-		this.tmx = new TmxMapLoader().load("tiles/city_simplified.tmx");
+		this.tmx = new TmxMapLoader().load("tiles/city.tmx");
 		tiles = tmx.getTileSets();
 		TileConverter.setup(tiles, game);
 		renderer = new IsometricStaggeredTiledMapRenderer(tmx);
@@ -249,7 +258,6 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 		actors.drawBackground();
 
 		camera.update();

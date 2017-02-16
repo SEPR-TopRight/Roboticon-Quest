@@ -154,34 +154,43 @@ public class RoboticonQuest extends Game {
 				generateResources();
 				break;
 
-			// Phase 5: Generate resource for player.
+			// Modified by Josh Neil
 			case 5:
-				setScreen(new ResourceMarketScreen(this));
-				break;
-			
-
-			// End phase - CLean up and move to next player.
-			case 6:
-				// Added by Josh Neil so that the game ends once all players have been
-				// acquired by a player (which will happen once each player has had their turn
-				// as there are an even number of plots) we go to the game over screen.
-				if(plotManager.allOwned()){ 
-					setScreen(new GameOverScreen(this));
-					break;
+				// If the current player is not the last player
+				// then we want the next player to have their turn.
+				// However if the current player is the last player then
+				// we want to go to the shared market phase (case 7)
+				System.out.println(currentPlayer);
+				System.out.println(playerList.size());
+				if(currentPlayer < playerList.size()-1){ 
+					nextPlayer();
 				}
 				else{
-					phase = newPhaseState = 1;
-					this.nextPlayer();
-					// No "break;" here!
-					// Let the game to do phase 1 preparation.
+					nextPlayer();
+					setScreen(new ResourceMarketScreen(this));
+					break;
 				}
-
+				
+			
+			// Added by Josh Neil - ensures that we go back to phase 1
+			case 6:
+				phase = newPhaseState =1;
+				// Deliberately falls through to the next case
+			
+			// Modified by Josh Neil so that we go to the game over screen once all plots have been acquired
 			// Phase 1: Enable of purchase LandPlot
 			case 1:
-				setScreen(gameScreen);
-				landBoughtThisTurn = 0;
-				gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));
+				if(plotManager.allOwned()){ 
+					setScreen(new GameOverScreen(this));
+				}
+				else{
+					setScreen(gameScreen);
+					landBoughtThisTurn = 0;
+					gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));
+				}
 				break;
+			
+			
 		}
 
 		if (gameScreen != null)
