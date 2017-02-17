@@ -2,15 +2,13 @@ package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -41,8 +39,11 @@ public class GameScreenActors {
 	private TextButton nextButton;
 	private boolean dropDownActive;
 	private boolean listUpdated;
-	private Texture backgroundImage;
+	private Image backgroundImage;
 	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
+
 	/**
 	 * Initialise the main game screen components.
 	 * @param game         The game manager {@link RoboticonQuest}
@@ -55,7 +56,7 @@ public class GameScreenActors {
 
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Texture(Gdx.files.internal("background/space-stars1080.png"));
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/space-stars.jpeg")));
 
 	}
 
@@ -65,7 +66,7 @@ public class GameScreenActors {
 	 */
 	public void drawBackground() {
 		batch.begin();
-		batch.draw(backgroundImage, 0, 0);
+		backgroundImage.draw(batch, 1);
 		batch.end();
 	}
 
@@ -363,7 +364,12 @@ public class GameScreenActors {
 
 		playerStats.setPosition(10, topBarY);
 		nextButton.setPosition(width - nextButton.getWidth() - 10, 10);
-	}
+
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
+		}
+
 
 	/**
 	 * Show plot information about current selected stats.

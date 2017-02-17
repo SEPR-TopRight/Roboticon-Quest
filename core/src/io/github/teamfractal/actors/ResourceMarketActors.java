@@ -6,11 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -51,10 +47,13 @@ public class ResourceMarketActors extends Table {
 	private final Stage stage;
 	
 	private Table marketTransactionWidget, playerToPlayerTransactionWidget;
+
 	private TextButton playerToPlayerTransactionButton, marketTransactionButton;
 
-	private Texture backgroundImage;
+	private Image backgroundImage;
 	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
 	
 	
 	/**
@@ -69,9 +68,9 @@ public class ResourceMarketActors extends Table {
 		this.screen = screen;
 		this.stage = screen.getStage();
     
-    //Added by Christian Beddows
+    	//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Texture(Gdx.files.internal("background/facility.png"));
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/facility.jpg")));
 		
 		// Modified by Josh Neil
 		createPlayerSelectDropDowns();
@@ -384,7 +383,7 @@ public class ResourceMarketActors extends Table {
 	 */
 	public void drawBackground() {
 		batch.begin();
-		batch.draw(backgroundImage, 0, 0);
+		backgroundImage.draw(batch, 1);
 		batch.end();
 	}
 	
@@ -484,6 +483,11 @@ public class ResourceMarketActors extends Table {
 
 		// Bottom Right
 		nextButton.setPosition(width - nextButton.getWidth() - 10, 10);
+
+		//Added by Christian Beddows
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 
 		setWidth(width);
 	}

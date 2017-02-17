@@ -20,8 +20,10 @@ public class HomeMainMenu extends Table {
 	private RoboticonQuest game;
 	private TextButton btnNewGame;
 	private TextButton btnExit;
-	private Texture backgroundImage;
+	private Image backgroundImage;
 	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
 
 	private static Texture titleTexture = new Texture(Gdx.files.internal("roboticon_images/Roboticon_Quest_Title"));
 
@@ -34,7 +36,7 @@ public class HomeMainMenu extends Table {
 
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Texture(Gdx.files.internal("background/corridor.png"));
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/corridor.jpg")));
 
 		// Create UI Components
 		final Image imgTitle = new Image();
@@ -60,12 +62,24 @@ public class HomeMainMenu extends Table {
 
 	/**
 	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * @author cb1423
 	 */
 	public void drawBackground() {
 		batch.begin();
-		batch.draw(backgroundImage, 0, 0);
+		backgroundImage.draw(batch, 1);
 		batch.end();
+	}
+
+	/**
+	 * Scales the background to fit the screen
+	 * @author cb1423
+	 * @param width
+	 * @param height
+	 */
+	public void resizeScreen(float width, float height) {
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 	}
 
 	/**
