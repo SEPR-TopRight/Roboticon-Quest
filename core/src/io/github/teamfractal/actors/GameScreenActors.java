@@ -167,7 +167,7 @@ public class GameScreenActors {
 					}
 					//Added a random event where you disturb a flock of geese on a plot - Ben
 					if (RandomEvents.geeseAttack()){
-						int food = RandomEvents.geese(game);
+						int food = RandomEvents.geeseStealResources(game);
 						stage.addActor(new MessagePopUp("Disturbed a flock of Geese!","On your new tile you "
 								+ "discover a flock of geese they attack!, you lost " + Integer.toString(food) + " food!"));
 					}
