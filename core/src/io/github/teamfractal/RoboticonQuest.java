@@ -15,6 +15,7 @@ import io.github.teamfractal.animation.IAnimationFinish;
 import io.github.teamfractal.screens.*;
 import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Player;
+import io.github.teamfractal.util.GameAudio;
 import io.github.teamfractal.util.GameMusic;
 import io.github.teamfractal.util.PlotManager;
 
@@ -40,6 +41,7 @@ public class RoboticonQuest extends Game {
 	public Market market;
 	private int landBoughtThisTurn;
 	private GameMusic gameMusic;
+	private GameAudio gameAudio;
 
 	public int getPlayerIndex (Player player) {
 		return playerList.indexOf(player);
@@ -66,6 +68,8 @@ public class RoboticonQuest extends Game {
 		setScreen(mainMenuScreen);
 
 		startMusic();
+		gameAudio = new GameAudio();
+		gameAudio.click();
 	}
 
 	public Batch getBatch() {

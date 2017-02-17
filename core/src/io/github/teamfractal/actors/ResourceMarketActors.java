@@ -65,7 +65,7 @@ public class ResourceMarketActors extends Table {
 		this.screen = screen;
 		this.stage = screen.getStage();
     
-    //Added by Christian Beddows
+    	//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/facility.jpg")));
 		
@@ -424,10 +424,11 @@ public class ResourceMarketActors extends Table {
 		// Bottom Right
 		nextButton.setPosition(width - nextButton.getWidth() - 10, 10);
 
-		setWidth(width);
-
+		//Added by Christian Beddows
 		scaleFactorX = width/backgroundImage.getWidth();
 		scaleFactorY = height/backgroundImage.getHeight();
 		backgroundImage.setScale(scaleFactorX,scaleFactorY);
+
+		setWidth(width);
 	}
 }

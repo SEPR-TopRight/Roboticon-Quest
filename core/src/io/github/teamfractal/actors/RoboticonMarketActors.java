@@ -299,7 +299,7 @@ public class RoboticonMarketActors extends Table {
 
 	/**
 	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * @author cb1423
 	 */
 	public void drawBackground() {
 		batch.begin();
@@ -307,6 +307,12 @@ public class RoboticonMarketActors extends Table {
 		batch.end();
 	}
 
+	/**
+	 * Method to scale the background
+	 * @author cb1423
+	 * @param width
+	 * @param height
+	 */
 	public void resizeScreen(float width, float height) {
 		scaleFactorX = width/backgroundImage.getWidth();
 		scaleFactorY = height/backgroundImage.getHeight();

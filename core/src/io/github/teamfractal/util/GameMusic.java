@@ -14,7 +14,7 @@ public class GameMusic {
      * Initialise the music stream
      */
     public GameMusic() {
-        music = Gdx.audio.newMusic(Gdx.files.internal("audio/squaredance.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/squaredance.mp3"));
     }
 
     /**
