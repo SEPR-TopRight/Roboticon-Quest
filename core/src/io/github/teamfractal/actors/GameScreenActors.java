@@ -20,6 +20,7 @@ import io.github.teamfractal.entity.Roboticon;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.AbstractAnimationScreen;
 import io.github.teamfractal.screens.GameScreen;
+import io.github.teamfractal.util.GameAudio;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
 import io.github.teamfractal.util.TileConverter;
@@ -43,6 +44,7 @@ public class GameScreenActors {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
+	private GameAudio gameAudio;
 
 	/**
 	 * Initialise the main game screen components.
@@ -57,6 +59,7 @@ public class GameScreenActors {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/space-stars.jpeg")));
+		gameAudio = new GameAudio();
 
 	}
 
@@ -143,6 +146,7 @@ public class GameScreenActors {
 		buyLandPlotBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				event.stop();
 				hideBuyLand();
 				if (buyLandPlotBtn.isDisabled()) {
@@ -182,6 +186,7 @@ public class GameScreenActors {
 		nextButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				event.stop();
 				if (nextButton.isDisabled()) {
 					return ;
@@ -203,6 +208,7 @@ public class GameScreenActors {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				event.stop();
 				if (installRoboticonBtn.isDisabled()) {
 					return ;
@@ -268,6 +274,7 @@ public class GameScreenActors {
 		installRoboticonBtnCancel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				event.stop();
 				dropDownActive = false;
 				hideInstallRoboticon();

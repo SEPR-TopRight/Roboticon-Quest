@@ -63,9 +63,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-
+		homeMainMenu.resizeScreen((float) width, (float) height);
 		stage.getViewport().update(width, height, true);
-		homeMainMenu.resizeScreen(width, height);
 	}
 
 	@Override
