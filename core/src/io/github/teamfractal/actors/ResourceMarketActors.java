@@ -16,6 +16,7 @@ import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.entity.enums.PurchaseStatus;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.ResourceMarketScreen;
+import io.github.teamfractal.util.GameAudio;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.StringUtil;
 
@@ -54,7 +55,7 @@ public class ResourceMarketActors extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	
+	private GameAudio gameAudio;
 	
 	/**
 	 * Initialise market actors.
@@ -71,6 +72,7 @@ public class ResourceMarketActors extends Table {
     	//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/facility.jpg")));
+		gameAudio = new GameAudio();
 		
 		// Modified by Josh Neil
 		createPlayerSelectDropDowns();
@@ -378,13 +380,11 @@ public class ResourceMarketActors extends Table {
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * returns the background image
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 	
 	private void updateMaxMarketQuantity(){
@@ -414,6 +414,7 @@ public class ResourceMarketActors extends Table {
 		nextButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				game.nextPhase();
 			}
 		});
@@ -421,6 +422,7 @@ public class ResourceMarketActors extends Table {
 		marketTransactionWidget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				updateMaxMarketQuantity();
 			}
 
@@ -429,6 +431,7 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerTransactionWidget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				updateMaxPlayerQuantity();
 			}
 		});
@@ -436,6 +439,7 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerTransactionButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				completePlayerToPlayerTransaction();
 			}
 		});
@@ -443,6 +447,7 @@ public class ResourceMarketActors extends Table {
 		marketTransactionButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				completeMarketTransaction();
 			}
 		});
@@ -477,17 +482,17 @@ public class ResourceMarketActors extends Table {
 	 * @param height   The new Height.
 	 */
 	public void screenResize(float width, float height) {
+		//Added by Christian Beddows
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
+
 		// Bottom Left
 		phaseInfo.setPosition(0, height - 20);
 		phaseInfo.setWidth(width - 10);
 
 		// Bottom Right
 		nextButton.setPosition(width - nextButton.getWidth() - 10, 10);
-
-		//Added by Christian Beddows
-		scaleFactorX = width/backgroundImage.getWidth();
-		scaleFactorY = height/backgroundImage.getHeight();
-		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 
 		setWidth(width);
 	}

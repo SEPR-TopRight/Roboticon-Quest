@@ -67,7 +67,7 @@ public class RoboticonQuest extends Game {
 
 		setScreen(mainMenuScreen);
 
-		startMusic();
+		//startMusic();
 		gameAudio = new GameAudio();
 		gameAudio.click();
 	}

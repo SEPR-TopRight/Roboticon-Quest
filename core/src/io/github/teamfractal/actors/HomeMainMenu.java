@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.teamfractal.RoboticonQuest;
+import io.github.teamfractal.util.GameAudio;
 import io.github.teamfractal.util.GameMusic;
 
 
@@ -24,6 +25,7 @@ public class HomeMainMenu extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
+	private GameAudio gameAudio;
 
 	private static Texture titleTexture = new Texture(Gdx.files.internal("roboticon_images/Roboticon_Quest_Title"));
 
@@ -37,6 +39,7 @@ public class HomeMainMenu extends Table {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/corridor.jpg")));
+		gameAudio = new GameAudio();
 
 		// Create UI Components
 		final Image imgTitle = new Image();
@@ -58,16 +61,15 @@ public class HomeMainMenu extends Table {
 		add(btnNewGame).pad(5);
 		row();
 		add(btnExit).pad(5);
+
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * @author cb1423
+	 * Returns the backgrounImage
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 
 	/**
@@ -89,6 +91,7 @@ public class HomeMainMenu extends Table {
 		btnNewGame.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
+				gameAudio.click();
 				game.setScreen(game.gameScreen);
 				game.gameScreen.newGame();
 			}
@@ -97,6 +100,7 @@ public class HomeMainMenu extends Table {
 		btnExit.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
+				gameAudio.click();
 				Gdx.app.exit();
 			}
 		});

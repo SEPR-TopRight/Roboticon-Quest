@@ -26,9 +26,10 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 		table.setFillParent(true);
 		
 		actors = new RoboticonMarketActors(game, this, market);
+		stage.addActor(actors.getBackgroundImage());
 
 		table.top().left().add(actors);
-		
+
 		stage.addActor(table);
 	}
 	
@@ -41,8 +42,6 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		actors.drawBackground();
-
 		stage.act(delta);
 		stage.draw();
 
@@ -51,10 +50,10 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 
 	@Override
 	public void resize(int width, int height) {
+		actors.resizeScreen(width, height);
 		stage.getViewport().update(width, height, true);
 		game.getBatch().setProjectionMatrix(stage.getCamera().combined);
 		actors.widgetUpdate();
-		actors.resizeScreen(width, height);
 	}
 
 	@Override

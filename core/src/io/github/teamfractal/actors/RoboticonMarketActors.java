@@ -14,6 +14,7 @@ import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Roboticon;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.RoboticonMarketScreen;
+import io.github.teamfractal.util.GameAudio;
 import io.github.teamfractal.util.MessagePopUp;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class RoboticonMarketActors extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
+	private GameAudio gameAudio;
 
 	private ArrayList<Roboticon> roboticons = new ArrayList<Roboticon>();
 
@@ -68,13 +70,14 @@ public class RoboticonMarketActors extends Table {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/factory.jpg")));
+		gameAudio = new GameAudio();
 
 		// Added by Josh Neil so players can make the market produce a roboticon
 		final TextButton produceRoboticonButton = new TextButton("Produce roboticon", game.skin);
 		produceRoboticonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				
+				gameAudio.click();
 				if(!market.attemptToProduceRoboticon()){
 					stage.addActor(new MessagePopUp("Not enough ore!","The market does not have enough ore to produce a roboticon!"));
 				}
@@ -97,6 +100,7 @@ public class RoboticonMarketActors extends Table {
 		addRoboticonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				roboticonAmount += 1;
 				lblRoboticonAmount.setText(roboticonAmount.toString());
 			}
@@ -107,6 +111,7 @@ public class RoboticonMarketActors extends Table {
 		subRoboticonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (roboticonAmount > 0) {
 					roboticonAmount -= 1;
 					lblRoboticonAmount.setText(roboticonAmount.toString());
@@ -119,7 +124,7 @@ public class RoboticonMarketActors extends Table {
 		buyRoboticonsButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				
+				gameAudio.click();
 				//added a popup if player doesnt have enough money to buy roboticons - ben
 				if (game.getPlayer().getMoney() < (roboticonAmount*game.market.getSellPrice(ResourceType.ROBOTICON))){
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to buy these roboticons."));
@@ -147,6 +152,7 @@ public class RoboticonMarketActors extends Table {
 		moveLeftRoboticonInventoryBtn.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (currentlySelectedRoboticonPos > 0) {
 					currentlySelectedRoboticonPos--;
 					setCurrentlySelectedRoboticon(currentlySelectedRoboticonPos);
@@ -158,6 +164,7 @@ public class RoboticonMarketActors extends Table {
 		moveRightRoboticonInventoryBtn.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (currentlySelectedRoboticonPos < roboticons.size() - 1) {
 					currentlySelectedRoboticonPos++;
 					setCurrentlySelectedRoboticon(currentlySelectedRoboticonPos);
@@ -180,6 +187,7 @@ public class RoboticonMarketActors extends Table {
 		buyCustomisationButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (-1 == currentlySelectedRoboticonPos) {
 					// nothing selected.
 					return;
@@ -206,6 +214,7 @@ public class RoboticonMarketActors extends Table {
 		nextButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				game.nextPhase();
 			}
 		});
@@ -298,13 +307,11 @@ public class RoboticonMarketActors extends Table {
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * @author cb1423
+	 * returns the background image
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 
 	/**

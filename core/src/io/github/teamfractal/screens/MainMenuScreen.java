@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -31,6 +32,7 @@ public class MainMenuScreen implements Screen {
 		homeMainMenu = new HomeMainMenu(game);
 		table.center().center().add(homeMainMenu);
 
+		stage.addActor(homeMainMenu.getBackgroundImage());
 		stage.addActor(table);
 
 		/*
@@ -55,7 +57,7 @@ public class MainMenuScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		homeMainMenu.drawBackground();
+		//homeMainMenu.drawBackground();
 
 		stage.act(delta);
 		stage.draw();
@@ -63,9 +65,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-
+		homeMainMenu.resizeScreen((float) width, (float) height);
 		stage.getViewport().update(width, height, true);
-		homeMainMenu.resizeScreen(width, height);
 	}
 
 	@Override

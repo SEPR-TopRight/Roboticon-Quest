@@ -25,17 +25,21 @@ import io.github.teamfractal.actors.GameScreenActors;
 import io.github.teamfractal.entity.LandPlot;
 import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.entity.enums.ResourceType;
+import io.github.teamfractal.util.GameAudio;
 import io.github.teamfractal.util.TileConverter;
 
 public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private final RoboticonQuest game;
 	private final OrthographicCamera camera;
 	private final Stage stage;
+	private final Stage bgstage;
 	private IsometricStaggeredTiledMapRenderer renderer;
 
 	private TiledMap tmx;
 	private TiledMapTileLayer mapLayer;
 	private TiledMapTileLayer playerOverlay;
+
+	private GameAudio gameAudio;
 
 	private float oldX;
 	private float oldY;
@@ -71,11 +75,15 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		camera.setToOrtho(false, oldW, oldH);
 		camera.update();
 
+		gameAudio = new GameAudio();
+
 		this.game = game;
 
 		// TODO: Add some HUD gui stuff (buttons, mini-map etc...)
 		this.stage = new Stage(new ScreenViewport());
+		this.bgstage = new Stage(stage.getViewport());
 		this.actors = new GameScreenActors(game, this);
+		bgstage.addActor(actors.getBackgroundImage());
 		actors.initialiseButtons();
 		// actors.textUpdate();
 		
@@ -142,6 +150,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		stage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				if (event.isStopped()) {
 					return ;
 				}
@@ -260,9 +269,11 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		actors.drawBackground();
 
 		camera.update();
+
+		bgstage.act(delta);
+		bgstage.draw();
 
 		renderer.setView(camera);
 		renderer.render();
