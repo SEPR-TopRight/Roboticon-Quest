@@ -61,16 +61,15 @@ public class HomeMainMenu extends Table {
 		add(btnNewGame).pad(5);
 		row();
 		add(btnExit).pad(5);
+
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * @author cb1423
+	 * Returns the backgrounImage
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 
 	/**
@@ -80,12 +79,8 @@ public class HomeMainMenu extends Table {
 	 * @param height
 	 */
 	public void resizeScreen(float width, float height) {
-		System.out.println("screen: " + String.valueOf(width) + ", " + String.valueOf(height));
-		System.out.println("background: " + String.valueOf(backgroundImage.getWidth()) + ", " + String.valueOf(backgroundImage.getHeight()));
 		scaleFactorX = width/backgroundImage.getWidth();
 		scaleFactorY = height/backgroundImage.getHeight();
-		System.out.println("scale: " + String.valueOf(scaleFactorX) + ", " + String.valueOf(scaleFactorY));
-		System.out.println("scaling: " + String.valueOf(scaleFactorX*backgroundImage.getWidth()) + ", " + String.valueOf(scaleFactorY*backgroundImage.getHeight()));
 		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 	}
 

@@ -307,14 +307,11 @@ public class RoboticonMarketActors extends Table {
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * @author cb1423
+	 * returns the background image
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1
-		);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 
 	/**

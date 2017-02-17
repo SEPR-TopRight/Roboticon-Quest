@@ -27,6 +27,7 @@ public class ResourceMarketScreen implements Screen {
 		actors = new ResourceMarketActors(game, this); // generates actors for the screen
 		table.center().add(actors); // positions actors
 
+		stage.addActor(actors.getBackgroundImage());
 		stage.addActor(table);
 	}
 
@@ -39,9 +40,8 @@ public class ResourceMarketScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		actors.drawBackground();
-
 		stage.act(delta);
+		actors.getBackgroundImage().toBack();
 		stage.draw();
 	}
 

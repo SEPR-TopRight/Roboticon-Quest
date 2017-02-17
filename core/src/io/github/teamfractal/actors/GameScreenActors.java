@@ -64,13 +64,11 @@ public class GameScreenActors {
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * returns the background image
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 
 	/**
@@ -162,6 +160,7 @@ public class GameScreenActors {
 				if (player.purchaseLandPlot(selectedPlot)) {
 					//Added a random event where the player finds a chest containing money - Christian Beddows
 					if (RandomEvents.tileHasChest()){
+						gameAudio.chime();
 						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(game);
 						stage.addActor(new MessagePopUp("You found a treasure chest!","On your new tile you "
 								+ "find a buried treasure chest containing " + Integer.toString(playerTreasure) + " money!"));
@@ -375,6 +374,7 @@ public class GameScreenActors {
 		scaleFactorX = width/backgroundImage.getWidth();
 		scaleFactorY = height/backgroundImage.getHeight();
 		backgroundImage.setScale(scaleFactorX,scaleFactorY);
+		backgroundImage.toBack();
 		}
 
 

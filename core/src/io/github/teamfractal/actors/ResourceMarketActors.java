@@ -380,13 +380,11 @@ public class ResourceMarketActors extends Table {
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * returns the background image
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		backgroundImage.draw(batch, 1);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 	
 	private void updateMaxMarketQuantity(){

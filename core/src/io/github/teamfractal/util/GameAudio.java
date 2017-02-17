@@ -10,12 +10,14 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class GameAudio {
     private Sound click;
+    private Sound chime;
 
     /**
      * Initialise all audio sound streams
      */
     public GameAudio() {
         click = Gdx.audio.newSound(Gdx.files.internal("audio/click.ogg"));
+        chime = Gdx.audio.newSound(Gdx.files.internal("audio/chime.ogg"));
     }
 
     /**
@@ -43,6 +45,10 @@ public class GameAudio {
         click.play();
     }
 
+    /**
+     * Plays a chime sound
+     */
+    public void chime() { chime.play(); }
     /**
      * plays a specific sound stream
      * @param sound
