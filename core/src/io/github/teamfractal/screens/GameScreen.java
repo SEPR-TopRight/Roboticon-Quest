@@ -32,6 +32,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private final RoboticonQuest game;
 	private final OrthographicCamera camera;
 	private final Stage stage;
+	private final Stage bgstage;
 	private IsometricStaggeredTiledMapRenderer renderer;
 
 	private TiledMap tmx;
@@ -80,8 +81,9 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 
 		// TODO: Add some HUD gui stuff (buttons, mini-map etc...)
 		this.stage = new Stage(new ScreenViewport());
+		this.bgstage = new Stage(stage.getViewport());
 		this.actors = new GameScreenActors(game, this);
-		stage.addActor(actors.getBackgroundImage());
+		bgstage.addActor(actors.getBackgroundImage());
 		actors.initialiseButtons();
 		// actors.textUpdate();
 		
@@ -270,12 +272,14 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 
 		camera.update();
 
-		stage.act(delta);
-		actors.getBackgroundImage().toBack();
-		stage.draw();
+		bgstage.act(delta);
+		bgstage.draw();
 
 		renderer.setView(camera);
 		renderer.render();
+
+		stage.act(delta);
+		stage.draw();
 
 		renderAnimation(delta);
 	}
