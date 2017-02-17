@@ -28,7 +28,8 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 		actors = new RoboticonMarketActors(game, this, market);
 		stage.addActor(actors.getBackgroundImage());
 
-		table.top().left().add(actors);
+		table.top().left().add(actors).expand().fill()
+		;
 
 		stage.addActor(table);
 	}

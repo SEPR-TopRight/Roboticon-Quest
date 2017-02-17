@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  */
 public class GameOverScreenActors extends HomeMainMenu {
-	
+
 	/**
 	 * Constructor
 	 * @param game The RoboticonQuest object that is being used to play the game

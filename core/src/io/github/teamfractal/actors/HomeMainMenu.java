@@ -1,7 +1,6 @@
 package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,8 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.teamfractal.RoboticonQuest;
-import io.github.teamfractal.util.GameAudio;
-import io.github.teamfractal.util.GameMusic;
+import io.github.teamfractal.util.SoundEffects;
 
 
 public class HomeMainMenu extends Table {
@@ -25,7 +23,7 @@ public class HomeMainMenu extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	private GameAudio gameAudio;
+	private SoundEffects gameAudio;
 
 	private static Texture titleTexture = new Texture(Gdx.files.internal("roboticon_images/Roboticon_Quest_Title"));
 
@@ -39,7 +37,7 @@ public class HomeMainMenu extends Table {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/corridor.jpg")));
-		gameAudio = new GameAudio();
+		gameAudio = new SoundEffects();
 
 		// Create UI Components
 		final Image imgTitle = new Image();
