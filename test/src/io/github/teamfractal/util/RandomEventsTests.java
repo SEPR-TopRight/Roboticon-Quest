@@ -91,7 +91,7 @@ public class RandomEventsTests {
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns zero when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns zero when the current
 	 * player has no food in their inventory
 	 */
 	@Test
@@ -100,11 +100,11 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(0);
-		assertEquals(0,RandomEvents.geese(game));
+		assertEquals(0,RandomEvents.geeseStealResources(game));
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that no food is taken out of the players inventory
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that no food is taken out of the players inventory
 	 * when the player has no food in their inventory
 	 */
 	@Test
@@ -113,12 +113,12 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(0);
-		RandomEvents.geese(game);
+		RandomEvents.geeseStealResources(game);
 		assertEquals(0,player.getFood());
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 0 when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns 0 when the current
 	 * player has 1 in their inventory
 	 */
 	@Test
@@ -127,11 +127,11 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(1);
-		assertEquals(0,RandomEvents.geese(game));
+		assertEquals(0,RandomEvents.geeseStealResources(game));
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that no food is taken out of the players inventory
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that no food is taken out of the players inventory
 	 * when the player has 1 food in their inventory
 	 */
 	@Test
@@ -140,12 +140,12 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(1);
-		RandomEvents.geese(game);
+		RandomEvents.geeseStealResources(game);
 		assertEquals(1,player.getFood());
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 2 when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns 2 when the current
 	 * player has 4 in their inventory
 	 */
 	@Test
@@ -154,11 +154,11 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(4);
-		assertEquals(2,RandomEvents.geese(game));
+		assertEquals(2,RandomEvents.geeseStealResources(game));
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that 2 food are taken out of the players inventory
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that 2 food are taken out of the players inventory
 	 * when the player has 4 food in their inventory
 	 */
 	@Test
@@ -167,7 +167,7 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(4);
-		RandomEvents.geese(game);
+		RandomEvents.geeseStealResources(game);
 		assertEquals(2,player.getFood());
 	}
 	
