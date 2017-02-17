@@ -2,14 +2,11 @@ package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -20,7 +17,7 @@ import io.github.teamfractal.entity.Roboticon;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.AbstractAnimationScreen;
 import io.github.teamfractal.screens.GameScreen;
-import io.github.teamfractal.util.GameAudio;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
 import io.github.teamfractal.util.TileConverter;
@@ -44,7 +41,7 @@ public class GameScreenActors {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	private GameAudio gameAudio;
+	private SoundEffects gameAudio;
 
 	/**
 	 * Initialise the main game screen components.
@@ -59,7 +56,7 @@ public class GameScreenActors {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/space-stars.jpeg")));
-		gameAudio = new GameAudio();
+		gameAudio = new SoundEffects();
 
 	}
 

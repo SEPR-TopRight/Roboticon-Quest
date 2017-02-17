@@ -28,7 +28,7 @@ public class GameOverScreen implements Screen {
 
 		gameOverScreenActors = new GameOverScreenActors(game);
 		table.center().center().add(gameOverScreenActors);
-
+		stage.addActor(gameOverScreenActors.getBackgroundImage());
 		stage.addActor(table);
 
 		/*
@@ -59,6 +59,7 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		gameOverScreenActors.resizeScreen((float)width, (float) height);
 		stage.getViewport().update(width, height, true);
 	}
 

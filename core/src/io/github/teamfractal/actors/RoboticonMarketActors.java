@@ -14,7 +14,7 @@ import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Roboticon;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.RoboticonMarketScreen;
-import io.github.teamfractal.util.GameAudio;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.MessagePopUp;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class RoboticonMarketActors extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	private GameAudio gameAudio;
+	private SoundEffects gameAudio;
 
 	private ArrayList<Roboticon> roboticons = new ArrayList<Roboticon>();
 
@@ -69,8 +69,8 @@ public class RoboticonMarketActors extends Table {
 
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Image(new Texture(Gdx.files.internal("background/factory.jpg")));
-		gameAudio = new GameAudio();
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/robotfactory.jpg")));
+		gameAudio = new SoundEffects();
 
 		// Added by Josh Neil so players can make the market produce a roboticon
 		final TextButton produceRoboticonButton = new TextButton("Produce roboticon", game.skin);
@@ -300,7 +300,7 @@ public class RoboticonMarketActors extends Table {
 		add();
 		add();
 		add();
-		add(nextButton).padTop(40);
+		add(nextButton).padTop(40).right();
 		
 	
 
@@ -378,10 +378,11 @@ public class RoboticonMarketActors extends Table {
 
 		// Draws turn and phase info on screen
 		if (this.topText != null) this.topText.remove();
-		String phaseText = "Player " + (game.getPlayerInt() + 1) + "; Phase " + game.getPhase();
+		String phaseText = "Player " + (game.getPlayerInt() + 1) + "; Phase " + game.getPhase() + " - " + game.getPhaseString();
+
 		this.topText = new Label(phaseText, game.skin);
 		topText.setWidth(120);
-		topText.setPosition(screen.getStage().getWidth() / 2 - 40, screen.getStage().getViewport().getWorldHeight() - 20);
+		topText.setPosition(screen.getStage().getWidth() -(topText.getPrefWidth()+10)	, screen.getStage().getViewport().getWorldHeight() - 20);
 		screen.getStage().addActor(topText);
 
 		// Draws player stats on screen

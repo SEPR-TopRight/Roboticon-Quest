@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,8 +16,7 @@ import io.github.teamfractal.animation.IAnimationFinish;
 import io.github.teamfractal.screens.*;
 import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Player;
-import io.github.teamfractal.util.GameAudio;
-import io.github.teamfractal.util.GameMusic;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.PlotManager;
 
 /**
@@ -40,8 +40,8 @@ public class RoboticonQuest extends Game {
 	public ArrayList<Player> playerList;
 	public Market market;
 	private int landBoughtThisTurn;
-	private GameMusic gameMusic;
-	private GameAudio gameAudio;
+	private Music gameMusic;
+	private SoundEffects gameAudio;
 
 	public int getPlayerIndex (Player player) {
 		return playerList.indexOf(player);
@@ -67,24 +67,15 @@ public class RoboticonQuest extends Game {
 
 		setScreen(mainMenuScreen);
 
-		//startMusic();
-		gameAudio = new GameAudio();
-		gameAudio.click();
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/squaredance.mp3"));
+		gameMusic.play();
+		gameMusic.setLooping(true);
 	}
 
 	public Batch getBatch() {
 		return batch;
 	}
 
-	/**
-	 * Initialises and starts the music playing
-	 * @author cb1423
-	 */
-	private void startMusic(){
-		gameMusic = new GameMusic();
-		gameMusic.play();
-		gameMusic.setLooping(true);
-	}
 	/**
 	 * Setup the default skin for GUI components.
 	 */
@@ -183,7 +174,7 @@ public class RoboticonQuest extends Game {
 			// Modified by Josh Neil so that we go to the game over screen once all plots have been acquired
 			// Phase 1: Enable of purchase LandPlot
 			case 1:
-				if(plotManager.allOwned()){ 
+				if(plotManager.allOwned() && currentPlayer == playerList.size()-1){
 					setScreen(new GameOverScreen(this));
 				}
 				else{

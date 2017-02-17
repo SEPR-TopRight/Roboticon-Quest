@@ -1,13 +1,10 @@
 package io.github.teamfractal.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricStaggeredTiledMapRenderer;
@@ -17,15 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.teamfractal.RoboticonQuest;
 import io.github.teamfractal.actors.GameScreenActors;
 import io.github.teamfractal.entity.LandPlot;
 import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.entity.enums.ResourceType;
-import io.github.teamfractal.util.GameAudio;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.TileConverter;
 
 public class GameScreen extends AbstractAnimationScreen implements Screen  {
@@ -39,7 +34,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private TiledMapTileLayer mapLayer;
 	private TiledMapTileLayer playerOverlay;
 
-	private GameAudio gameAudio;
+	private SoundEffects gameAudio;
 
 	private float oldX;
 	private float oldY;
@@ -75,7 +70,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		camera.setToOrtho(false, oldW, oldH);
 		camera.update();
 
-		gameAudio = new GameAudio();
+		gameAudio = new SoundEffects();
 
 		this.game = game;
 
@@ -244,7 +239,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		// Setup the game board.
 		if (tmx != null) tmx.dispose();
 		if (renderer != null) renderer.dispose();
-		this.tmx = new TmxMapLoader().load("tiles/city.tmx");
+		this.tmx = new TmxMapLoader().load("tiles/city_simplified.tmx");
 		tiles = tmx.getTileSets();
 		TileConverter.setup(tiles, game);
 		renderer = new IsometricStaggeredTiledMapRenderer(tmx);

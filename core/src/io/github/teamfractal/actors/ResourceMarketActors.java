@@ -16,7 +16,7 @@ import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.entity.enums.PurchaseStatus;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.ResourceMarketScreen;
-import io.github.teamfractal.util.GameAudio;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.StringUtil;
 
@@ -55,7 +55,6 @@ public class ResourceMarketActors extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	private GameAudio gameAudio;
 	
 	/**
 	 * Initialise market actors.
@@ -71,8 +70,7 @@ public class ResourceMarketActors extends Table {
     
     	//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Image(new Texture(Gdx.files.internal("background/facility.jpg")));
-		gameAudio = new GameAudio();
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/nightfacility.jpg")));
 		
 		// Modified by Josh Neil
 		createPlayerSelectDropDowns();
@@ -414,7 +412,7 @@ public class ResourceMarketActors extends Table {
 		nextButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				game.nextPhase();
 			}
 		});
@@ -422,7 +420,7 @@ public class ResourceMarketActors extends Table {
 		marketTransactionWidget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				gameAudio.click();
+				SoundEffects.click();
 				updateMaxMarketQuantity();
 			}
 
@@ -431,7 +429,7 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerTransactionWidget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				gameAudio.click();
+				SoundEffects.click();
 				updateMaxPlayerQuantity();
 			}
 		});
@@ -439,7 +437,7 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerTransactionButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				completePlayerToPlayerTransaction();
 			}
 		});
@@ -447,7 +445,7 @@ public class ResourceMarketActors extends Table {
 		marketTransactionButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				completeMarketTransaction();
 			}
 		});
