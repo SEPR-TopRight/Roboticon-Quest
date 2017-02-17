@@ -48,10 +48,13 @@ public class ResourceMarketActors extends Table {
 	
 	private Table marketTransactionWidget, playerToPlayerTransactionWidget;
 
+	private TextButton playerToPlayerTransactionButton, marketTransactionButton;
+
 	private Image backgroundImage;
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
+	
 	
 	/**
 	 * Initialise market actors.
@@ -98,7 +101,10 @@ public class ResourceMarketActors extends Table {
 		bindEvents();
 		widgetUpdate();
 	}
-		
+	
+	/**
+	 * Creates the drop down menus that are used by players to select the resource that they want to buy/sell
+	 */
 	private void createResourceSelectBoxes(){
 		playerToPlayerResourceDropDown = new SelectBox<String>(game.skin);
 		marketResourceDropDown = new SelectBox<String>(game.skin);
@@ -107,19 +113,27 @@ public class ResourceMarketActors extends Table {
 		marketResourceDropDown.setItems(resources);
 	}
 	
-	
+	/**
+	 * Called whenever the sell button is clicked to carry out a sale from one player to another
+	 * <p>
+	 * If the sale is successful then both of the player's inventory data will be updated on screen.
+	 * If it is not successful then then a MessagePopUp is deployed that lets the players know why it failed.
+	 * </p>
+	 */
 	private void completePlayerToPlayerTransaction(){
 		int buyingPlayerIndex = playerToPlayerBuyerDropDown.getSelectedIndex();
 		int sellingPlayerIndex = playerToPlayerSellerDropDown.getSelectedIndex();
 		
-		if(buyingPlayerIndex == sellingPlayerIndex){
-			return;  // Player selling to itself is pointless
-		}
+		
 		
 		Player buyingPlayer = game.playerList.get(buyingPlayerIndex);
 		Player sellingPlayer = game.playerList.get(sellingPlayerIndex);
 		
 		int quantity = playerToPlayerQuantityAdjustableActor.getValue();
+		
+		if(buyingPlayerIndex == sellingPlayerIndex || quantity == 0){
+			return;  // Player selling to itself or selling 0 of anything is pointless
+		}
 		
 		String resourceString = playerToPlayerResourceDropDown.getSelected().toLowerCase();
 		ResourceType resource = StringUtil.stringToResource(resourceString);
@@ -150,6 +164,13 @@ public class ResourceMarketActors extends Table {
 		
 	}
 	
+	/**
+	 * Called whenever the complete transaction button is clicked to carry out a transaction between the specified player and the market
+	 * <p>
+	 * If the sale is successful then the player's and market's inventory data will be updated on screen.
+	 * If it is not successful then then a MessagePopUp is deployed that lets the player know why it failed.
+	 * </p>
+	 */
 	private void completeMarketTransaction(){
 		int playerIndex = marketPlayerDropDown.getSelectedIndex();
 		int quantity = marketQuantityAdjustableActor.getValue();
@@ -186,10 +207,18 @@ public class ResourceMarketActors extends Table {
 		widgetUpdate();
 	}
 	
+	/**
+	 * Creates the AdjustableActor that is used to specify the price players want to buy for each unit
+	 * of a given resource.
+	 */
 	private void createPlayerToPlayerPriceAdjustableActor(){
 		playerToPlayerPriceAdjustableActor = new AdjustableActor(game.skin , 1,1,50,"price", "complete transaction",false);		
 	}
 	
+	/**
+	 * Creates the drop down menus that can be used to select the player(s) involved in a transaction with another player
+	 * or with the market
+	 */
 	private void createPlayerSelectDropDowns(){
 		playerToPlayerSellerDropDown = new SelectBox<String>(game.skin);
 		playerToPlayerBuyerDropDown = new SelectBox<String>(game.skin);
@@ -203,17 +232,27 @@ public class ResourceMarketActors extends Table {
 		marketPlayerDropDown.setItems(players);
 	}
 	
+	/**
+	 * Creates the drop down menu that is used to indicate whether a player wants to buy from the market or sell to it
+	 */
 	private void createBuyOrSellDropDown(){
 		marketBuyOrSellDropDown = new SelectBox<String>(game.skin);
 		String[] options = {"buy","sell"};
 		marketBuyOrSellDropDown.setItems(options);
 	}
 
+	/**
+	 * Creates the adjustable actors that are used to select the amount of a given resource that is to be traded
+	 * either between players or between a player and the market
+	 */
 	private void createQuantityAdjustableActors(){
 		playerToPlayerQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100, "quantity", "",false);
 		marketQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100, "quantity", "",false);
 	}
 	
+	/**
+	 * Updates the player inventory data (form all players) that is displayed on screen
+	 */
 	private void updatePlayerStatsLabels(){
 		for(int playerIndex =0;playerIndex<game.playerList.size();playerIndex++){
 			Player player = game.playerList.get(playerIndex);
@@ -226,6 +265,10 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
+	/**
+	 * Creates the the labels that are used to display the players inventory data on screen
+	 * (creates one for each player that is currently playing the game)
+	 */
 	private void createPlayerStatsLabels(){
 		int numberOfPlayers = game.playerList.size();
 		playerStatsLabels = new Label[numberOfPlayers];
@@ -234,6 +277,11 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
+	/**
+	 * Adds all of the player stats labels to the screen separated by a new row
+	 * (note must be called after {@link ResourceMarketActors#createPlayerStatsLabels()} 
+	 * and it will add as many labels as that method has created to the screen)
+	 */
 	private void addPlayerStatsLabels(){
 		for(int player=0; player<playerStatsLabels.length;player++){
 			add(playerStatsLabels[player]).left();
@@ -241,28 +289,15 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
-	
-	
-	private void setPlayerToPlayerTransactionButtonBehaviour(TextButton button){
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				completePlayerToPlayerTransaction();
-			}
-		});
-	}
-	
-	private void setMarketTransactionButtonBehaviour(TextButton button){
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				completeMarketTransaction();
-			}
-		});
-	}
-	
+	/**
+	 * Creates a table that contains all of the widgets that the player uses to 
+	 * set up and carry out a transaction between themselves and another player.
+	 * <p>
+	 * All placed in a table so treated like 1 single widget by LibGDX
+	 * </p>
+	 * @return A table that contains all of the widgets that the player uses to set up and carry out a transaction between themselves and another player.
+	 */
 	private Table createPlayerToPlayerTransactionWidget(){
-		// All placed in a table so treated like 1 single widget for a clean layout
 		Table container = new Table();
 		container.add(playerToPlayerSellerDropDown).padRight(10);
 		container.add(new Label("sell",game.skin)).padRight(10);
@@ -273,12 +308,19 @@ public class ResourceMarketActors extends Table {
 		container.add(new Label("for",game.skin)).padRight(10);
 		container.add(playerToPlayerPriceAdjustableActor).padRight(10);
 		container.add(new Label("money per unit",game.skin)).padRight(10);
-		TextButton playerToPlayerTransactionButton = new TextButton(" Sell ", game.skin);
-		setPlayerToPlayerTransactionButtonBehaviour(playerToPlayerTransactionButton);
+		playerToPlayerTransactionButton = new TextButton(" Sell ", game.skin);
 		container.add(playerToPlayerTransactionButton);
 		return container;
 	}
 	
+	/**
+	 * Creates a table that contains all of the widgets that the player uses to 
+	 * set up and carry out a transaction between themselves and the market.
+	 * <p>
+	 * All placed in a table so treated like 1 single widget by LibGDX
+	 * </p>
+	 * @return A table that contains all of the widgets that the player uses to set up and carry out a transaction between themselves and the market.
+	 */
 	private Table createMarketTransactionWidget(){
 		// All placed in a table so treated like 1 single widget for a clean layout
 		Table container = new Table();
@@ -287,12 +329,16 @@ public class ResourceMarketActors extends Table {
 		container.add(marketQuantityAdjustableActor).padRight(10);
 		container.add(marketResourceDropDown).padRight(10);
 		container.add(new Label("to / from the market",game.skin)).padRight(10);
-		TextButton marketTransactionButton = new TextButton(" Complete transaction ", game.skin);
-		setMarketTransactionButtonBehaviour(marketTransactionButton);
+		marketTransactionButton = new TextButton(" Complete transaction ", game.skin);
 		container.add(marketTransactionButton);
 		return container;
 	}
 	
+	/**
+	 * Creates a table that is used to display the buying and selling prices of all the resources bought and sold by the market.
+	 * @param market The market in question
+	 * @return A table that is used to display the buying and selling prices of all the resources bought and sold by the market.
+	 */
 	private Table createMarketCostDisplayWidget(Market market){
 		Table marketCostsTable = new Table();
 		
@@ -362,7 +408,7 @@ public class ResourceMarketActors extends Table {
 	}
 
 	/**
-	 * Bind button events.
+	 * Sets the action that is performed when each of the on screen buttons is clicked
 	 */
 	private void bindEvents() {
 		nextButton.addListener(new ClickListener() {
@@ -387,11 +433,25 @@ public class ResourceMarketActors extends Table {
 			}
 		});
 		
+		playerToPlayerTransactionButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				completePlayerToPlayerTransaction();
+			}
+		});
+		
+		marketTransactionButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				completeMarketTransaction();
+			}
+		});
+		
 	}
 
 	// Josh changed to private
 	/**
-	 * Updates all widgets on screen
+	 * Updates all widgets on screen with new data
 	 */
 	private void widgetUpdate() {
 		// update player stats, phase text, and the market stats.

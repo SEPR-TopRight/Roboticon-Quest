@@ -150,7 +150,6 @@ public class RoboticonQuest extends Game {
 						gameScreen.getActors().hideInstallRoboticon();
 					}
 				});
-				gameScreen.getActors().updateRoboticonSelection();
 				setScreen(gameScreen);
 				break;
 
@@ -165,8 +164,7 @@ public class RoboticonQuest extends Game {
 				// then we want the next player to have their turn.
 				// However if the current player is the last player then
 				// we want to go to the shared market phase (case 7)
-				System.out.println(currentPlayer);
-				System.out.println(playerList.size());
+				
 				if(currentPlayer < playerList.size()-1){ 
 					nextPlayer();
 				}

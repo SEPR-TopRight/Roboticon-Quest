@@ -387,9 +387,6 @@ public class GameScreenActors {
 		plotStats.setVisible(true);
 	}
 
-	public void updateRoboticonSelection() {
-		// TODO: Implement this method
-	}
 
 	/**
 	 * Hide "Buy Land" button and plot information.
