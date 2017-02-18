@@ -11,6 +11,9 @@ import io.github.teamfractal.RoboticonQuest;
 import io.github.teamfractal.actors.RoboticonMarketActors;
 import io.github.teamfractal.entity.Market;
 
+/**
+ * The screen that players can use to buy and customise roboticons
+ */
 public class RoboticonMarketScreen extends AbstractAnimationScreen implements Screen {
 
 	final RoboticonQuest game;
@@ -18,14 +21,17 @@ public class RoboticonMarketScreen extends AbstractAnimationScreen implements Sc
 	final Table table;
 	private RoboticonMarketActors actors;
 	
-	/// Modified by Josh Neil so that it takes the market so that it can pass it to the RoboticonMarketActors constructor
-	public RoboticonMarketScreen(final RoboticonQuest game,Market market) {
+	/**
+	 * Constructor
+	 * @param game The RoboticonQuest object that contains the current player and market
+	 */
+	public RoboticonMarketScreen(final RoboticonQuest game) {
 		this.game = game;
 		this.stage = new Stage(new ScreenViewport());
 		this.table = new Table();
 		table.setFillParent(true);
 		
-		actors = new RoboticonMarketActors(game, this, market);
+		actors = new RoboticonMarketActors(game, this);
 
 		table.top().left().add(actors);
 		

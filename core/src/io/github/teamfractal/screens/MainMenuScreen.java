@@ -14,14 +14,21 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.teamfractal.RoboticonQuest;
 import io.github.teamfractal.actors.AdjustableActor;
 import io.github.teamfractal.actors.HomeMainMenu;
-import io.github.teamfractal.util.GameMusic;
 
+/**
+ * The main menu screen that is displayed when the game is first opened and can
+ * be used to start a new game
+ */
 public class MainMenuScreen implements Screen {
 	final RoboticonQuest game;
 	final Stage stage;
 	final Table table;
 	private final HomeMainMenu homeMainMenu;
 
+	/**
+	 * Constructor
+	 * @param game The RoboticonQuest object that will be used to actually play the game once started
+	 */
 	public MainMenuScreen(final RoboticonQuest game) {
 		this.game = game;
 		this.stage = new Stage(new ScreenViewport());

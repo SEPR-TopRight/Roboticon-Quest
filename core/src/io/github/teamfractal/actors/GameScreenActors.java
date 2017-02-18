@@ -26,6 +26,9 @@ import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
 import io.github.teamfractal.util.TileConverter;
 
+/**
+ * Creates all of the widgets that are displayed on the main game screen
+ */
 public class GameScreenActors {
 	private final Stage stage;
 	private RoboticonQuest game;
@@ -321,7 +324,7 @@ public class GameScreenActors {
 	 */
 	private void updateRoboticonList() {
 		
-		///// Changed getRoboticonAmountList() to getCustomisedRoboticonAmountList()
+		///// Josh Neil changed getRoboticonAmountList() to getCustomisedRoboticonAmountList()
 		///// Stop player's placing uncustomised roboticons
 		installRoboticonSelect.setItems(game.getPlayer().getCustomisedRoboticonAmountList());
 	}

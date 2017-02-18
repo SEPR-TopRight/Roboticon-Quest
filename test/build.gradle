@@ -4,8 +4,8 @@ sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
-  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8'
-  compile 'junit:junit:4.12'
+ 
   testCompile 'junit:junit:4.12'
-  
+  compile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
 }

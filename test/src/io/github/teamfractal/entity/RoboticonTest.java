@@ -8,7 +8,7 @@ import io.github.teamfractal.entity.enums.ResourceType;
 // All JavaDocs added by Josh
 
 /**
- * Test case for {@link Roboticon}
+ * Integration tests for {@link Roboticon}
  * @author jcn509
  */
 public class RoboticonTest {
@@ -20,26 +20,6 @@ public class RoboticonTest {
 	@Before
 	public void setup() {
 		roboticon = new Roboticon(1);
-	}
-	
-	/**
-	 * Ensures that when a new roboticon object is created it is not installed on any land plot and
-	 * it is not customised
-	 */
-	@Test
-	public void initialisationTest(){
-		assertEquals(roboticon.getCustomisation(), ResourceType.Unknown);
-		assertFalse(roboticon.isInstalled());
-	}
-	
-	/**
-	 * Tests {@link Roboticon#setCustomisation(ResourceType)} and ensures that the customisation is set correctly
-	 * (this is a very simple setter method and therefore only needs one test)
-	 */
-	@Test
-	public void customisationTest(){
-		roboticon.setCustomisation(ResourceType.ORE);
-		assertEquals(roboticon.getCustomisation(), ResourceType.ORE);
 	}
 	
 	/**
@@ -99,7 +79,4 @@ public class RoboticonTest {
 		roboticon.setInstalledLandplot(plot);
 		assertTrue(roboticon.isInstalled());
 	}
-
-	
-
 }

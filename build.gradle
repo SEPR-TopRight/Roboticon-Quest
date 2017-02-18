@@ -61,6 +61,8 @@ project(":core") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+	compile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
     }
 }
 
@@ -70,7 +72,7 @@ project(":test") {
 
     dependencies {
         compile project(":core")
-	testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8'
+	
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
@@ -82,6 +84,8 @@ project(":test") {
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "org.mockito:mockito-core:1.+"
+	compile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
 	
     }
 }

@@ -4,7 +4,7 @@ import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.exception.InvalidResourceTypeException;
 
 /**
- * Some string extension classes
+ * Contains code used to perform operations on strings
  */
 public class StringUtil {
 	/**
