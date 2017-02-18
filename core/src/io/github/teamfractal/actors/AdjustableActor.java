@@ -9,6 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * A UI widget that works similarly to spinbox that allows users to enter
+ * a numerical value using their mouse to click buttons to increase and decrease said value
+ *
+ */
 public class AdjustableActor extends Table {
 	//<editor-fold desc="UI Components">
 	private final TextButton subButton;
@@ -201,21 +206,17 @@ public class AdjustableActor extends Table {
 		setValue(value);
 	}
 	
-	// Added by Josh Neil
+	// Added by Josh Neil so that we can create AdjustableActors that do not have labels
+	// or action buttons for use in the ResourceMarket screen (ResourceMarketActors class)
 	/**
-	 * The adjustable actor
-	 * For an easy way of adjust values in a step of 1 / -1.
-	 *
+	 * Create an adjustable actor that does not have an action button or a label attached to it
 	 * @param skin    The skin file for the UI.
 	 * @param value   The default value.
 	 * @param min     The minimum value.
 	 * @param max     The maximum value.
-	 * @param title   The adjustable title.
-	 * @param action  The action button text.
-	 * @param labelAndButton specifies whether or not the user wishes to have the title label and action button displayed on screen
 	 */
-	public AdjustableActor(Skin skin, int value, int min, int max, String title, String action, boolean labelAndButton) {
-		this(skin, title, action,labelAndButton);
+	public AdjustableActor(Skin skin, int value, int min, int max) {
+		this(skin, "", "",false);
 
 		setMax(max);
 		setMin(min);

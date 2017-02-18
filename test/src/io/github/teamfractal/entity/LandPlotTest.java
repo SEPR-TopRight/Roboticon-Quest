@@ -12,6 +12,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.experimental.runners.Enclosed;
 
+/**
+ * Integration tests for {@link LandPlot}
+ * @author jcn509
+ *
+ */
+
+// Josh Neil removed all unit tests from this class now that there is a separate class for them
 @RunWith(Enclosed.class)
 public class LandPlotTest {
 	
@@ -195,13 +202,15 @@ public class LandPlotTest {
 	
 		/// Tests below this comment added by Josh
 		
+		
+		// Removed by Josh as is a unit test
 		/**
 		 * Ensures that newly created LandPlots don't have an owner
-		 */
+		 *
 		@Test
 		public void initiallyNoOwner(){
 			assertFalse(plot.hasOwner());
-		}
+		}*/
 		
 		/**
 		 * Tests {@link LandPlot#setOwner(Player)} ensures that it is possible to 
@@ -256,13 +265,15 @@ public class LandPlotTest {
 			assertFalse(plot.hasOwner()); // No longer owned!
 		}
 		
+		
+		// Removed by Josh as is a unit test
 		/**
 		 * Ensures that LandPlots do not initially have a roboticon on them
-		 */
+		 *
 		@Test
 		public void testInitiallyNoRoboticon(){
 			assertFalse(plot.hasRoboticon());
-		}
+		}*/
 		
 		/**
 		 * Tests {@link LandPlot#installRoboticon(Roboticon)} ensures that a roboticon is actually placed on the plot

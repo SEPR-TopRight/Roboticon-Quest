@@ -19,12 +19,16 @@ public class ScoreComparisons {
 	 */
 	public static String getWinnerText(ArrayList<Player> playerList){
 		// Note if some (but not all) players have the same score the first one in the array wins
+		// this is unfair but at present that game only has 2 players so this is not an issue
 		if(allPlayersSameScore(playerList)){
 			return "Its a draw!";
 		}
 		int highestScoreingPlayer = 0;
+		int highestScore = 0;
 		for(int playerNumber =0; playerNumber<playerList.size();playerNumber++){
-			if(playerList.get(playerNumber).getScore() > playerList.get(highestScoreingPlayer).getScore()){
+			int score = playerList.get(playerNumber).getScore();
+			if(score > highestScore){
+				highestScore = score;
 				highestScoreingPlayer = playerNumber;
 			}
 		}
@@ -38,7 +42,7 @@ public class ScoreComparisons {
 	 */
 	private static boolean allPlayersSameScore(ArrayList<Player> playerList){
 		int previousScore = playerList.get(0).getScore(); // Initialised to first player's score
-		for(int playerNumber =0; playerNumber<playerList.size();playerNumber++){
+		for(int playerNumber =1; playerNumber<playerList.size();playerNumber++){
 			if(playerList.get(playerNumber).getScore() != previousScore){
 				return false; // At least one score differs
 			}

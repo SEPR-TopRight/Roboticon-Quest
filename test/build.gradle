@@ -1,9 +1,11 @@
 apply plugin: "java"
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
-  compile 'junit:junit:4.12'
+ 
   testCompile 'junit:junit:4.12'
+  compile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
 }

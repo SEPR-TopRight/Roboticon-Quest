@@ -7,6 +7,11 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import io.github.teamfractal.RoboticonQuest;
 
+/**
+ * Creates an application window and launches the game
+ * @author jcn509
+ *
+ */
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

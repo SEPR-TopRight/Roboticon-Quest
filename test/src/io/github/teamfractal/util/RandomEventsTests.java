@@ -17,11 +17,12 @@ import java.util.ArrayList;
 // These tests just check that when these methods are run Integer.MAX_VALUE number of times they return true at least
 // once and false at least once.
 /**
- * Test case for {@link RandomEvents}
+ * Integration tests involving {@link RandomEvents}
  */
 public class RandomEventsTests {
 	
 	/**
+<<<<<<< HEAD
 	 * Tests {@link RandomEvents#roboticonIsFaulty()} ensures that when it is run Integer.MAX_VALUE number of times
 	 * it returns true at least once and false at least once
 	 */
@@ -92,6 +93,9 @@ public class RandomEventsTests {
 	
 	/**
 	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns zero when the current
+=======
+	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns zero when the current
+>>>>>>> josh
 	 * player has no food in their inventory
 	 */
 	@Test
@@ -169,6 +173,33 @@ public class RandomEventsTests {
 		player.setFood(4);
 		RandomEvents.geeseStealResources(game);
 		assertEquals(2,player.getFood());
+	}
+	
+	/**
+	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 2 when the current
+	 * player has 5 food in their inventory
+	 */
+	@Test
+	public void testGeeseReturnHalfFoodFive(){
+		RoboticonQuest game = new RoboticonQuest();
+		Player player = new Player(game); // Ensures at least one player in the game
+		player = game.getPlayer();
+		player.setFood(4);
+		assertEquals(2,RandomEvents.geese(game));
+	}
+	
+	/**
+	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that 2 food are taken out of the players inventory
+	 * when the player has 5 food in their inventory
+	 */
+	@Test
+	public void testGeeseTwoFoodTakenFive(){
+		RoboticonQuest game = new RoboticonQuest();
+		Player player = new Player(game); // Ensures at least one player in the game
+		player = game.getPlayer();
+		player.setFood(5);
+		RandomEvents.geese(game);
+		assertEquals(3,player.getFood());
 	}
 	
 	/**

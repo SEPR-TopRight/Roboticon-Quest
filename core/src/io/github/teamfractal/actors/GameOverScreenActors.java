@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Josh Neil creates all the actors to be displayed on the game over screen
+ * Note: extends the HomeMainMenu class so that the game over screen also features all widgets
+ * displayed on the main menu screen such as the new game button
  * @author jcn509
  *
  */

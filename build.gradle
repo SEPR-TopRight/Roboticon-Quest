@@ -33,7 +33,7 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java"
-
+   
 
     dependencies {
         compile project(":core")
@@ -61,15 +61,23 @@ project(":core") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+	compile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
     }
 }
 
 project(":test") {
     apply plugin: "java"
-
+    sourceCompatibility = 1.8
 
     dependencies {
         compile project(":core")
+<<<<<<< HEAD
+	
+=======
+	testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8'
+	compile group: 'org.jmockit', name: 'jmockit', version: '1.8'
+>>>>>>> ca2cdda54d7045754b3ef464a4a467eb6e685436
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
@@ -81,10 +89,13 @@ project(":test") {
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "org.mockito:mockito-core:1.+"
-        testCompile 'junit:junit:4.12'
+	compile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+  testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8' 
+	
     }
 }
 
 tasks.eclipse.doLast {
     delete ".project"
+	configurations.runtime.each { println it }
 }
