@@ -17,78 +17,9 @@ import java.util.ArrayList;
 // These tests just check that when these methods are run Integer.MAX_VALUE number of times they return true at least
 // once and false at least once.
 /**
- * Test case for {@link RandomEvents}
+ * Integration tests involving {@link RandomEvents}
  */
 public class RandomEventsTests {
-	
-	/**
-	 * Tests {@link RandomEvents#roboticonIsFaulty()} ensures that when it is run Integer.MAX_VALUE number of times
-	 * it returns true at least once and false at least once
-	 */
-	@Test
-	public void testRoboticonIsFaulty(){
-		boolean atLeastOneTrue=false;
-		boolean atLeastOneFalse=false;
-		for(int i=0; i<Integer.MAX_VALUE; i++){
-			boolean result = RandomEvents.roboticonIsFaulty();
-			if(result){
-				atLeastOneTrue = true;
-			}
-			else{
-				atLeastOneFalse = true;
-			}
-			if(atLeastOneTrue && atLeastOneFalse){
-				return;
-			}
-		}
-		fail();
-	}
-	
-	/**
-	 * Tests {@link RandomEvents#tileHasChest()} ensures that when it is run Integer.MAX_VALUE number of times
-	 * it returns true at least once and false at least once
-	 */
-	@Test
-	public void testTileHasChest(){
-		boolean atLeastOneTrue=false;
-		boolean atLeastOneFalse=false;
-		for(int i=0; i<Integer.MAX_VALUE; i++){
-			boolean result = RandomEvents.tileHasChest();
-			if(result){
-				atLeastOneTrue = true;
-			}
-			else{
-				atLeastOneFalse = true;
-			}
-			if(atLeastOneTrue && atLeastOneFalse){
-				return;
-			}
-		}
-		fail();
-	}
-	
-	/**
-	 * Tests {@link RandomEvents#geeseAttack()} ensures that when it is run Integer.MAX_VALUE number of times
-	 * it returns true at least once and false at least once
-	 */
-	@Test
-	public void testGuestAttack(){
-		boolean atLeastOneTrue=false;
-		boolean atLeastOneFalse=false;
-		for(int i=0; i<Integer.MAX_VALUE; i++){
-			boolean result = RandomEvents.geeseAttack();
-			if(result){
-				atLeastOneTrue = true;
-			}
-			else{
-				atLeastOneFalse = true;
-			}
-			if(atLeastOneTrue && atLeastOneFalse){
-				return;
-			}
-		}
-		fail();
-	}
 	
 	/**
 	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns zero when the current
@@ -169,6 +100,33 @@ public class RandomEventsTests {
 		player.setFood(4);
 		RandomEvents.geese(game);
 		assertEquals(2,player.getFood());
+	}
+	
+	/**
+	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 2 when the current
+	 * player has 5 food in their inventory
+	 */
+	@Test
+	public void testGeeseReturnHalfFoodFive(){
+		RoboticonQuest game = new RoboticonQuest();
+		Player player = new Player(game); // Ensures at least one player in the game
+		player = game.getPlayer();
+		player.setFood(4);
+		assertEquals(2,RandomEvents.geese(game));
+	}
+	
+	/**
+	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that 2 food are taken out of the players inventory
+	 * when the player has 5 food in their inventory
+	 */
+	@Test
+	public void testGeeseTwoFoodTakenFive(){
+		RoboticonQuest game = new RoboticonQuest();
+		Player player = new Player(game); // Ensures at least one player in the game
+		player = game.getPlayer();
+		player.setFood(5);
+		RandomEvents.geese(game);
+		assertEquals(3,player.getFood());
 	}
 	
 	/**

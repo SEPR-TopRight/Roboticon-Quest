@@ -1032,6 +1032,8 @@ public class PlayerTest {
 			}
 		}
 		
+		// Due to the fact that these tests only rely on 2 getter methods from Roboticon
+		// there is not a separate unit test version of them
 		/**
 		 * Tests {@link Player#getCustomisedRoboticonAmountList()} using player objects with differning numbers of roboticons of various
 		 * types and ensures that the correct values are returned
@@ -1044,6 +1046,9 @@ public class PlayerTest {
 			private int numberOfEnergyRoboticons;
 			private int numberOfOreRoboticons;
 			private int numberOfFoodRoboticons;
+			private int numberOfOreRoboticonsAlreadyPlaced;
+			private int numberOfEnergyRoboticonsAlreadyPlaced;
+			private int numberOfFoodRoboticonsAlreadyPlaced;
 			
 			private Player player;
 			private LandPlot plot1,plot2,plot3;
@@ -1052,11 +1057,17 @@ public class PlayerTest {
 			public PlayerGetCustomisedRoboticonAmountListParamaterisedTests(int numberOfUncustomisedRoboticons,
 															int numberOfEnergyRoboticons,
 															int numberOfOreRoboticons,
-															int numberOfFoodRoboticons){
+															int numberOfFoodRoboticons,
+															int numberOfOreRoboticonsAlreadyPlaced,
+															int numberOfEnergyRoboticonsAlreadyPlaced,
+															int numberOfFoodRoboticonsAlreadyPlaced){
 				this.numberOfUncustomisedRoboticons = numberOfUncustomisedRoboticons;
 				this.numberOfEnergyRoboticons = numberOfEnergyRoboticons;
 				this.numberOfOreRoboticons = numberOfOreRoboticons;
 				this.numberOfFoodRoboticons = numberOfFoodRoboticons;
+				this.numberOfOreRoboticonsAlreadyPlaced = numberOfOreRoboticonsAlreadyPlaced;
+				this.numberOfEnergyRoboticonsAlreadyPlaced = numberOfEnergyRoboticonsAlreadyPlaced;
+				this.numberOfFoodRoboticonsAlreadyPlaced = numberOfFoodRoboticonsAlreadyPlaced;
 			}
 			
 			/**
@@ -1066,19 +1077,24 @@ public class PlayerTest {
 			public static Collection playerCustomisedRoboticonAmountListTestValues(){
 				 
 				 return Arrays.asList(new Object[][] {
-			         {15,1,1,1},
-			         {0,1,1,1},
-			         {16,1,2,3},
-			         {16,6,7,2},
-			         {15,2,2,2},
-			         {1111,67,89,10},
-			         {112135,1,0,0},
-			         {112315,0,0,1},
-			         {1335,0,1,0},
-			         {112135,20,0,0},
-			         {112315,0,0,34},
-			         {1335,0,56,0},
-			         {0,20,56,34},
+			         {15,1,1,1,0,0,0},
+			         {0,1,1,1,0,0,0},
+			         {16,1,2,3,0,0,0},
+			         {16,6,7,2,0,0,0},
+			         {15,2,2,2,0,0,0},
+			         {1111,67,89,10,0,0,0},
+			         {112135,1,0,0,0,0,0},
+			         {112315,0,0,1,0,0,0},
+			         {1335,0,1,0,0,0,0},
+			         {112135,20,0,0,0,0,0},
+			         {112315,0,0,34,0,0,0},
+			         {1335,0,56,0,0,0,0},
+			         {0,20,56,34,0,0,0},
+			         {15,1,1,1,0,1,1},
+			         {1111,67,89,10,3,0,0},
+			         {1111,67,89,10,0,4,0},
+			         {1111,67,89,10,0,0,2},
+			         {1111,67,89,10,1,3,9},
 			      });
 			}
 			
@@ -1095,22 +1111,43 @@ public class PlayerTest {
 					player.roboticonList.add(roboticon);
 				}
 				
+				int numberToPlace = numberOfOreRoboticonsAlreadyPlaced;
 				for(int ore =0; ore<numberOfOreRoboticons; ore++){
 					Roboticon roboticon = new Roboticon(ore);
 					roboticon.setCustomisation(ResourceType.ORE);
 					player.roboticonList.add(roboticon);
+		
+					if(numberToPlace>0){
+						numberToPlace--;
+						LandPlot plot = new LandPlot(0, 0, 0);
+						roboticon.setInstalledLandplot(plot);
+					}
 				}
 				
+				numberToPlace = numberOfEnergyRoboticonsAlreadyPlaced;
 				for(int energy =0; energy<numberOfEnergyRoboticons; energy++){
 					Roboticon roboticon = new Roboticon(energy);
 					roboticon.setCustomisation(ResourceType.ENERGY);
 					player.roboticonList.add(roboticon);
+					
+					if(numberToPlace>0){
+						numberToPlace--;
+						LandPlot plot = new LandPlot(0, 0, 0);
+						roboticon.setInstalledLandplot(plot);
+					}
 				}
 				
+				numberToPlace = numberOfFoodRoboticonsAlreadyPlaced;
 				for(int food =0; food<numberOfFoodRoboticons; food++){
 					Roboticon roboticon = new Roboticon(food);
 					roboticon.setCustomisation(ResourceType.FOOD);
 					player.roboticonList.add(roboticon);
+					
+					if(numberToPlace>0){
+						numberToPlace--;
+						LandPlot plot = new LandPlot(0, 0, 0);
+						roboticon.setInstalledLandplot(plot);
+					}
 				}
 			}
 			
@@ -1130,7 +1167,7 @@ public class PlayerTest {
 			@Test
 			public void testCorrectOre(){
 				Array<String> roboticonList = player.getCustomisedRoboticonAmountList();
-				assertEquals("ore specific x "+Integer.toString(numberOfOreRoboticons),roboticonList.get(0).toLowerCase());
+				assertEquals("ore specific x "+Integer.toString(numberOfOreRoboticons-numberOfOreRoboticonsAlreadyPlaced),roboticonList.get(0).toLowerCase());
 			}
 			
 			/**
@@ -1139,7 +1176,7 @@ public class PlayerTest {
 			@Test
 			public void testCorrectEnergy(){
 				Array<String> roboticonList = player.getCustomisedRoboticonAmountList();
-				assertEquals("energy specific x "+Integer.toString(numberOfEnergyRoboticons),roboticonList.get(1).toLowerCase());
+				assertEquals("energy specific x "+Integer.toString(numberOfEnergyRoboticons-numberOfEnergyRoboticonsAlreadyPlaced),roboticonList.get(1).toLowerCase());
 			}
 			
 			/**
@@ -1147,8 +1184,10 @@ public class PlayerTest {
 			 */
 			@Test
 			public void testCorrectFood(){
+				System.out.println(numberOfFoodRoboticons);
+				System.out.println(numberOfFoodRoboticonsAlreadyPlaced);
 				Array<String> roboticonList = player.getCustomisedRoboticonAmountList();
-				assertEquals("food specific x "+Integer.toString(numberOfFoodRoboticons),roboticonList.get(2).toLowerCase());
+				assertEquals("food specific x "+Integer.toString(numberOfFoodRoboticons-numberOfFoodRoboticonsAlreadyPlaced),roboticonList.get(2).toLowerCase());
 			}
 			
 		}

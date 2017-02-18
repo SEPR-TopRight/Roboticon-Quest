@@ -19,6 +19,14 @@ import io.github.teamfractal.util.MessagePopUp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Creates all of the UI widgets that are placed on the RoboticonMarketScreen
+ */
+
+// Please note: this class is a mess and if Top Right Corner had the time they would
+// have refactored it. However they felt it better to focus their efforts on improving
+// the automated testing and implementing new features.
+
 public class RoboticonMarketActors extends Table {
 	private RoboticonQuest game;
 	private RoboticonMarketScreen screen;
@@ -52,11 +60,12 @@ public class RoboticonMarketActors extends Table {
 		food_texture = new Texture(Gdx.files.internal("roboticon_images/robot_food.png"));
 	}
 
-	// Josh Neil modified constructor to accept market object
-	public RoboticonMarketActors(final RoboticonQuest game, RoboticonMarketScreen screen, final Market market) {
+	public RoboticonMarketActors(final RoboticonQuest game, RoboticonMarketScreen screen) {
 		this.game = game;
 		this.screen = screen;
 		final Stage stage = screen.getStage(); // Added by Josh Neil
+		
+		Market market = game.market; // Added by Josh Neil
 
 		this.roboticonID = new Label("", game.skin);
 		this.marketStats = new Label("", game.skin);

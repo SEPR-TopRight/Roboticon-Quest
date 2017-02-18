@@ -8,6 +8,10 @@ import io.github.teamfractal.RoboticonQuest;
 import io.github.teamfractal.entity.LandPlot;
 import io.github.teamfractal.entity.Player;
 
+/**
+ * Manages LandPlot objects and map tiles that are displayed on screen
+ *
+ */
 public class PlotManager {
 	private LandPlot[][] plots;
 	private TiledMapTileSets tiles;

@@ -25,6 +25,10 @@ import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.util.TileConverter;
 
+/**
+ * The main game screen that allows players to interact with all the plots
+ *
+ */
 public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private final RoboticonQuest game;
 	private final OrthographicCamera camera;
@@ -331,10 +335,18 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		return s;
 	}
 
+	/**
+	 * 
+	 * @return the tmx map pf plot tiles used in the game
+	 */
 	public TiledMap getTmx(){
 		return this.tmx;
 	}
 	
+	/**
+	 * 
+	 * @return the widgets (actors) displayed on the screen
+	 */
 	public GameScreenActors getActors(){
 		return this.actors;
 	}

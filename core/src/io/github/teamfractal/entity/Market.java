@@ -4,6 +4,10 @@ import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.exception.InvalidResourceTypeException;
 import io.github.teamfractal.exception.NotCommonResourceException;
 
+/**
+ * Players can use the market to buy and sell resources, roboticons and roboticon customisation
+ *
+ */
 public class Market {
 	/**
 	 * Initialise the market
@@ -201,7 +205,7 @@ public class Market {
 	}
 
 	/**
-	 * Get the single price for a resource type.
+	 * Get the price that the market will pay a player for a single unit of a given resource.
 	 * @param resource   The {@link ResourceType}.
 	 * @return           The buy in price.
 	 */
@@ -210,7 +214,7 @@ public class Market {
 	}
 
 	/**
-	 * Get the single price for a resource type.
+	 * Get the price that a player must pay the market for a single unit of a given resource.
 	 * @param resource   The {@link ResourceType}.
 	 * @return           The sell price.
 	 */

@@ -14,12 +14,20 @@ import io.github.teamfractal.actors.AdjustableActor;
 import io.github.teamfractal.actors.GameOverScreenActors;
 import io.github.teamfractal.actors.HomeMainMenu;
 
+/**
+ * Displays the player's scores and a statement of who has won once the game has ended
+ * @author jcn509
+ */
 public class GameOverScreen implements Screen {
 	final RoboticonQuest game;
 	final Stage stage;
 	final Table table;
 	private final GameOverScreenActors gameOverScreenActors;
 
+	/**
+	 * Constructor
+	 * @param game The game object that contains the required play objects
+	 */
 	public GameOverScreen(final RoboticonQuest game) {
 		this.game = game;
 		this.stage = new Stage(new ScreenViewport());
@@ -30,18 +38,6 @@ public class GameOverScreen implements Screen {
 		table.center().center().add(gameOverScreenActors);
 
 		stage.addActor(table);
-
-		/*
-		AdjustableActor actor1 = new AdjustableActor(game.skin, 0, 0, 100, "Ore: 10 Gold","Action");
-		actor1.setActionEvent(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println("Action clicked!");
-			}
-		});
-		actor1.setPosition(40, 40);
-		stage.addActor(actor1);
-		*/
 	}
 
 	@Override

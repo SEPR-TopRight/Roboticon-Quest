@@ -12,7 +12,8 @@ import java.util.ArrayList;
 
 // Created by Josh Neil
 /**
- * Test case for {@link ScoreComparisons}
+ * Integration tests for {@link ScoreComparisons}, {@link Market} and {@link Player}
+ * (note market is stored within game and thus not initialised here)
  */
 public class ScoreComparisonsTest {
 	private Player player1;

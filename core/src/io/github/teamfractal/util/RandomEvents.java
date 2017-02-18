@@ -1,6 +1,7 @@
 package io.github.teamfractal.util;
 
 import io.github.teamfractal.RoboticonQuest;
+import io.github.teamfractal.entity.enums.ResourceType;
 
 // Class created by Josh Neil - contains code needed to implement random events
 /**

@@ -19,6 +19,11 @@ import static io.github.teamfractal.entity.enums.ResourceType.ENERGY;
 import static io.github.teamfractal.entity.enums.ResourceType.FOOD;
 import static io.github.teamfractal.entity.enums.ResourceType.ORE;
 
+/**
+ * Holds all data relating to a single player and implements the logic required
+ * for players to buy and sell to/from the market and other players, aquire land and 
+ * make that land produce resources
+ */
 public class Player {
 	//<editor-fold desc="Resource getter and setter">
 	private int money = 100;
