@@ -89,7 +89,6 @@ public class RoboticonQuest extends Game {
 		gameMusic.play();
 		gameMusic.setLooping(true);
 		gameMusic.setVolume((float)0.3);
-
 	}
 
 	/**
@@ -99,7 +98,6 @@ public class RoboticonQuest extends Game {
 	public Batch getBatch() {
 		return batch;
 	}
-
 
 	/**
 	 * Setup the default skin for GUI components.

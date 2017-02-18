@@ -17,7 +17,6 @@ import io.github.teamfractal.entity.Roboticon;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.AbstractAnimationScreen;
 import io.github.teamfractal.screens.GameScreen;
-import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
 import io.github.teamfractal.util.TileConverter;
@@ -274,6 +273,7 @@ public class GameScreenActors {
 		installRoboticonBtnCancel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+
 				SoundEffects.click();
 				event.stop();
 				dropDownActive = false;
