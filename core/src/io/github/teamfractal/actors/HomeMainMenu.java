@@ -12,9 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.teamfractal.RoboticonQuest;
+<<<<<<< HEAD
 import io.github.teamfractal.util.SoundEffects;
 
+=======
+>>>>>>> josh
 
+/**
+ * Creates all of the UI widgets that are displayed on the main menu screen
+ *
+ */
 public class HomeMainMenu extends Table {
 	private RoboticonQuest game;
 	private TextButton btnNewGame;

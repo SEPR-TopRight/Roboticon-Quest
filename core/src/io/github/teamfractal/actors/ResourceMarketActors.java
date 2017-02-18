@@ -49,12 +49,17 @@ public class ResourceMarketActors extends Table {
 	
 	private Table marketTransactionWidget, playerToPlayerTransactionWidget;
 
+<<<<<<< HEAD
 	private TextButton playerToPlayerTransactionButton, marketTransactionButton;
 
 	private Image backgroundImage;
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
+=======
+	private Texture backgroundImage;
+	private SpriteBatch batch;
+>>>>>>> josh
 	
 	/**
 	 * Initialise market actors.
@@ -212,7 +217,7 @@ public class ResourceMarketActors extends Table {
 	 * of a given resource.
 	 */
 	private void createPlayerToPlayerPriceAdjustableActor(){
-		playerToPlayerPriceAdjustableActor = new AdjustableActor(game.skin , 1,1,50,"price", "complete transaction",false);		
+		playerToPlayerPriceAdjustableActor = new AdjustableActor(game.skin , 1,1,50);		
 	}
 	
 	/**
@@ -246,8 +251,8 @@ public class ResourceMarketActors extends Table {
 	 * either between players or between a player and the market
 	 */
 	private void createQuantityAdjustableActors(){
-		playerToPlayerQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100, "quantity", "",false);
-		marketQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100, "quantity", "",false);
+		playerToPlayerQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100);
+		marketQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100);
 	}
 	
 	/**
@@ -365,6 +370,10 @@ public class ResourceMarketActors extends Table {
 		return marketCostsTable;
 	}
 	
+	/**
+	 * Once all the UI widgets have been created this method is used
+	 * to add them all the the screen in the correct places
+	 */
 	private void addAllWidgetsToScreen(){
 		addPlayerStatsLabels(); // Added by Josh
 		row();
@@ -385,6 +394,12 @@ public class ResourceMarketActors extends Table {
 		return backgroundImage;
 	}
 	
+	/**
+	 * Sets the maximum value that can be selected using the market quantity adjustable actor
+	 * if the marketBuyOrSellDropDown is set to buy then the value is the number of 
+	 * the resource selected using the marketResourceDropDown otherwise it is the number
+	 * of the given resource that the selected player is in possession of.
+	 */
 	private void updateMaxMarketQuantity(){
 		ResourceType resource = StringUtil.stringToResource(marketResourceDropDown.getSelected());
 		if(marketBuyOrSellDropDown.getSelectedIndex() == 0){ // Buying is the first option
@@ -398,6 +413,10 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
+	/**
+	 * Sets the maximum value that can be selected using the playerToPlayerQuantityAdjustableActor
+	 * to the number of the chosen resource that the selling player has in their possession
+	 */
 	private void updateMaxPlayerQuantity(){
 		ResourceType resource = StringUtil.stringToResource(playerToPlayerResourceDropDown.getSelected());
 		int playerIndex = playerToPlayerSellerDropDown.getSelectedIndex();

@@ -1,14 +1,20 @@
 package io.github.teamfractal.entity;
 
 import io.github.teamfractal.entity.enums.ResourceType;
+import mockit.*;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class MarketTest {
+// Josh Neil changed the name of this class from MarketTest to MarketUnitTest as it contains only unit tests
+/**
+ * Test case for {@link Market}
+ */
+public class MarketUnitTest {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
@@ -104,6 +110,10 @@ public class MarketTest {
 		assertEquals(20,market.getSellPrice(ResourceType.ENERGY));
 	}
 
+	/**
+	 * Tests {@link Market#sellResource(ResourceType, int)} ensures that resources are actually
+	 * removed from the market
+	 */
 	@Test
 	public void marketShouldReduceResourcesWhenSells(){
 		market.setEnergy(10);

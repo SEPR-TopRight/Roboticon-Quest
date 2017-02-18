@@ -132,6 +132,9 @@ public class PlayerTest {
 			assertEquals(21, market.getFood());
 		}
 	
+		// This test was modified by Josh Neil
+		// it use to test that each call threw an exception which was incorrect
+		// as the method does not throw an exception but instead returns PurchaseStatus.FailMarketNotEnoughResource
 		/**
 		 * Tests {@link Player#purchaseResourceFromMarket(int, Market, ResourceType)} ensures
 		 * that players cannot buy more of a given resource than the market possesses 
@@ -145,25 +148,23 @@ public class PlayerTest {
 		public void testPlayerCannotBuyMoreThanAllowed() throws Exception {
 			Market market = new Market();
 			// Attempt to purchase more ore than allowed
-			try {
-				player.purchaseResourceFromMarket(100, market, ResourceType.ORE);
-			} catch (Exception exception1) {
-				assertEquals(100, player.getMoney());
-				assertEquals(0, player.getOre());
-				// Attempt to purchase more energy than allowed
-				try {
-					player.purchaseResourceFromMarket(100, market, ResourceType.ENERGY);
-				} catch (Exception exception2) {
-					assertEquals(100, player.getMoney());
-					assertEquals(0, player.getEnergy());
-					try {// Added by Josh Neil
-						player.purchaseResourceFromMarket(100, market, ResourceType.FOOD);
-					} catch (Exception exception3) {
-						assertEquals(100, player.getMoney());
-						assertEquals(0, player.getFood());
-					}
-				}
-			}
+			// Attempt to purchase more ore than allowed
+			
+			assertEquals(PurchaseStatus.FailMarketNotEnoughResource,player.purchaseResourceFromMarket(100, market, ResourceType.ORE));
+				
+			assertEquals(100, player.getMoney());
+			assertEquals(0, player.getOre());
+			// Attempt to purchase more energy than allowed
+					
+			assertEquals(PurchaseStatus.FailMarketNotEnoughResource,player.purchaseResourceFromMarket(100, market, ResourceType.ENERGY));
+							
+			assertEquals(100, player.getMoney());
+			assertEquals(0, player.getEnergy());
+			// Added by Josh Neil
+			assertEquals(PurchaseStatus.FailMarketNotEnoughResource,player.purchaseResourceFromMarket(100, market, ResourceType.FOOD));
+						
+			assertEquals(100, player.getMoney());
+			assertEquals(0, player.getFood());
 		}
 	
 		/**
@@ -418,10 +419,11 @@ public class PlayerTest {
 		}
 		
 		
-		
+		// Tests below were removed by Josh Neil as they are unit tests and unit tests
+		// are in the PlayerUnitTest class
 		/**
 		 * Tests {@link Player#setEnergy(int)} ensures that an exception is thrown if a negative value is used
-		 */
+		 *
 		@Test(expected=IllegalArgumentException.class)
 		public void testNegativeSetEnergy(){
 			player.setEnergy(-1);
@@ -429,7 +431,7 @@ public class PlayerTest {
 		
 		/**
 		 * Tests {@link Player#setOre(int)} ensures that an exception is thrown if a negative value is used
-		 */
+		 *
 		@Test(expected=IllegalArgumentException.class)
 		public void testNegativeSetOre(){
 			player.setOre(-1);
@@ -437,7 +439,7 @@ public class PlayerTest {
 		
 		/**
 		 * Tests {@link Player#setFood(int)} ensures that an exception is thrown if a negative value is used
-		 */
+		 *
 		@Test(expected=IllegalArgumentException.class)
 		public void testNegativeSetFood(){
 			player.setFood(-1);
@@ -445,11 +447,11 @@ public class PlayerTest {
 		
 		/**
 		 * Tests {@link Player#setMoney(int)} ensures that an exception is thrown if a negative value is used
-		 */
+		 *
 		@Test(expected=IllegalArgumentException.class)
 		public void testNegativeSetMoney(){
 			player.setMoney(-1);
-		}
+		}*/
 		
 		
 	}
@@ -777,262 +779,8 @@ public class PlayerTest {
 			
 		}
 		
-		/**
-		 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} using various input values and ensures that the correct result
-		 * is returned, the correct amount of money, ore, energy and food is removed/added from/to each player's inventory 
-		 * @author jcn509
-		 *
-		 */
-		@RunWith(Parameterized.class)
-		public static class PlayerToPlayerSaleParamaterisedTests{
-			 private Player buyingPlayer,sellingPlayer;
-			 private int buyingPlayerOreBefore;
-			 private int buyingPlayerEnergyBefore;
-			 private int buyingPlayerFoodBefore;
-			 private int buyingPlayerExpectedOreChange;
-			 private int buyingPlayerExpectedEnergyChange;
-			 private int buyingPlayerExpectedFoodChange;
-			 private int sellingPlayerOreBefore;
-			 private int sellingPlayerEnergyBefore;
-			 private int sellingPlayerFoodBefore;
-			 private int sellingPlayerExpectedOreChange;
-			 private int sellingPlayerExpectedEnergyChange;
-			 private int sellingPlayerExpectedFoodChange;
-			 private int buyingPlayerMoneyBefore;
-			 private int sellingPlayerMoneyBefore;
-			 private int buyingPlayerExpectedMoneyChange;
-			 private int sellingPlayerExpectedMoneyChange;
-			 private ResourceType resource;
-			 private PurchaseStatus expectedReturnValue;
-			 private int pricePerUnit;
-			 private int quantity;
-			
-			/**
-			 * Runs before every test and sets up the values of the required parameters
-			 * @param buyingPlayerQuantityBefore The amount of the given resource that the buying player had prior to the sale
-			 * @param buyingPlayerExpectedQuantityChange The amount of the given resource that should be added to the buying player's inventory
-			 * @param buyingPlayerMoneyBefore The amount of money that the buying player had prior to the sale
-			 * @param buyingPlayerExpectedMoneyChange The amount of money that should be removed from the buying player's inventory
-			 * @param sellingPlayerQuantityBefore The amount of the given resource that the selling player had prior to the sale 
-			 * @param sellingPlayerExpectedQuantityChange The amount of the given resource that should be removed from the selling player's inventory
-			 * @param sellingPlayerMoneyBefore The amount of money that the selling player had prior to the sale
-			 * @param sellingPlayerExpectedMoneyChange The amount of money that should be added to the selling player's inventory
-			 * @param resource The resource that the selling player is selling
-			 * @param pricePerUnit The amount of money that is to be paid for each unit of the resource that is being sold
-			 * @param quantity The amount of the resource that is to be sold
-			 * @param expectedReturnValue The result returned by {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)}
-			 */
-			public PlayerToPlayerSaleParamaterisedTests(int buyingPlayerQuantityBefore, int buyingPlayerExpectedQuantityChange,
-														int buyingPlayerMoneyBefore,int buyingPlayerExpectedMoneyChange,
-														int sellingPlayerQuantityBefore, 
-														int sellingPlayerExpectedQuantityChange, int sellingPlayerMoneyBefore,
-														int sellingPlayerExpectedMoneyChange, 
-														ResourceType resource, int pricePerUnit,int quantity,PurchaseStatus expectedReturnValue){
-				this.buyingPlayerOreBefore = 0;
-				this.buyingPlayerEnergyBefore = 0;
-				this.buyingPlayerFoodBefore = 0;
-				this.buyingPlayerExpectedOreChange = 0;
-				this.buyingPlayerExpectedEnergyChange = 0;
-				this.buyingPlayerExpectedFoodChange = 0;
-				this.sellingPlayerOreBefore = 0;
-				this.sellingPlayerEnergyBefore = 0;
-				this.sellingPlayerFoodBefore = 0;
-				this.sellingPlayerExpectedOreChange = 0;
-				this.sellingPlayerExpectedEnergyChange = 0;
-				this.sellingPlayerExpectedFoodChange = 0;
-				this.buyingPlayerMoneyBefore = buyingPlayerMoneyBefore;
-				this.sellingPlayerMoneyBefore = sellingPlayerMoneyBefore;
-				this.buyingPlayerExpectedMoneyChange = buyingPlayerExpectedMoneyChange;
-				this.sellingPlayerExpectedMoneyChange = sellingPlayerExpectedMoneyChange;
-				this.resource = resource;
-				this.expectedReturnValue = expectedReturnValue;
-				this.pricePerUnit = pricePerUnit;
-				this.quantity = quantity;
-				
-				switch(resource){
-					case ORE:
-						buyingPlayerOreBefore = buyingPlayerQuantityBefore;
-						buyingPlayerExpectedOreChange = buyingPlayerExpectedQuantityChange;
-						sellingPlayerOreBefore = sellingPlayerQuantityBefore;
-						sellingPlayerExpectedOreChange = sellingPlayerExpectedQuantityChange;
-					break;
-					
-					case ENERGY:
-						buyingPlayerEnergyBefore = buyingPlayerQuantityBefore;
-						buyingPlayerExpectedEnergyChange = buyingPlayerExpectedQuantityChange;
-						sellingPlayerEnergyBefore = sellingPlayerQuantityBefore;
-						sellingPlayerExpectedEnergyChange = sellingPlayerExpectedQuantityChange;
-					break;
-					
-					case FOOD:
-						buyingPlayerFoodBefore = buyingPlayerQuantityBefore;
-						buyingPlayerExpectedFoodChange = buyingPlayerExpectedQuantityChange;
-						sellingPlayerFoodBefore = sellingPlayerQuantityBefore;
-						sellingPlayerExpectedFoodChange = sellingPlayerExpectedQuantityChange;
-					break;
-				}
-			}
-			
-			/**
-			 * Defines the values to be used in each test
-			 */
-			@Parameterized.Parameters
-			public static Collection playerToPlayerSaleValues(){
-				 return Arrays.asList(new Object[][] {
-			         {0, 10,100,100,10, 10, 0,100, ResourceType.ORE, 10,10,PurchaseStatus.Success},
-			         {0, 9,90,90,9, 9, 0,90, ResourceType.ORE, 10,9,PurchaseStatus.Success},
-			         {1, 1,90,1,1, 1, 0,1, ResourceType.ORE, 1,1,PurchaseStatus.Success},
-			         {0, 10,100,100,10, 10, 0,100, ResourceType.ORE, 10,10,PurchaseStatus.Success},
-			         {100, 10,100,100,10, 10, 0,100, ResourceType.ORE, 10,10,PurchaseStatus.Success},
-			         {100, 10,100,100,100, 10, 0,100, ResourceType.ORE, 10,10,PurchaseStatus.Success},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.ORE, 10,10,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,990,0,100, 0, 0,0, ResourceType.ORE, 100,10,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,990,0,1000, 0, 0,0, ResourceType.ORE, 1,1000,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.ORE, 1,100,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.ORE, 100,100,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0,0,0,0,0,0,0,0,ResourceType.ORE,10,10,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0, 0,100,0,9, 0, 0,0, ResourceType.ORE, 10,10,PurchaseStatus.FailPlayerNotEnoughResource},
-			         
-			         {0, 10,100,100,10, 10, 0,100, ResourceType.ENERGY, 10,10,PurchaseStatus.Success},
-			         {0, 9,90,90,9, 9, 0,90, ResourceType.ENERGY, 10,9,PurchaseStatus.Success},
-			         {1, 1,90,1,1, 1, 0,1, ResourceType.ENERGY, 1,1,PurchaseStatus.Success},
-			         {0, 10,100,100,10, 10, 0,100, ResourceType.ENERGY, 10,10,PurchaseStatus.Success},
-			         {100, 10,100,100,10, 10, 0,100, ResourceType.ENERGY, 10,10,PurchaseStatus.Success},
-			         {100, 10,100,100,100, 10, 0,100, ResourceType.ENERGY, 10,10,PurchaseStatus.Success},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.ENERGY, 10,10,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,990,0,100, 0, 0,0, ResourceType.ENERGY, 100,10,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,990,0,1000, 0, 0,0, ResourceType.ENERGY, 1,1000,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.ENERGY, 1,100,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.ENERGY, 100,100,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0,0,0,0,0,0,0,0,ResourceType.ENERGY,10,10,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0, 0,100,0,9, 0, 0,0, ResourceType.ENERGY, 10,10,PurchaseStatus.FailPlayerNotEnoughResource},
-			         
-			         {0, 10,100,100,10, 10, 0,100, ResourceType.FOOD, 10,10,PurchaseStatus.Success},
-			         {0, 9,90,90,9, 9, 0,90, ResourceType.FOOD, 10,9,PurchaseStatus.Success},
-			         {1, 1,90,1,1, 1, 0,1, ResourceType.FOOD, 1,1,PurchaseStatus.Success},
-			         {0, 10,100,100,10, 10, 0,100, ResourceType.FOOD, 10,10,PurchaseStatus.Success},
-			         {100, 10,100,100,10, 10, 0,100, ResourceType.FOOD, 10,10,PurchaseStatus.Success},
-			         {100, 10,100,100,100, 10, 0,100, ResourceType.FOOD, 10,10,PurchaseStatus.Success},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.FOOD, 10,10,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,990,0,100, 0, 0,0, ResourceType.FOOD, 100,10,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,990,0,1000, 0, 0,0, ResourceType.FOOD, 1,1000,PurchaseStatus.FailPlayerNotEnoughMoney},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.FOOD, 1,100,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0, 0,99,0,10, 0, 0,0, ResourceType.FOOD, 100,100,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0,0,0,0,0,0,0,0,ResourceType.FOOD,10,10,PurchaseStatus.FailPlayerNotEnoughResource},
-			         {0, 0,100,0,9, 0, 0,0, ResourceType.FOOD, 10,10,PurchaseStatus.FailPlayerNotEnoughResource},
-			      });
-			}
-			/**
-			 * Runs before every test and creates the necessary objects
-			 */
-			@Before
-			public void setup(){
-				buyingPlayer = new Player(null);
-				buyingPlayer.setOre(buyingPlayerOreBefore);
-				buyingPlayer.setEnergy(buyingPlayerEnergyBefore);
-				buyingPlayer.setFood(buyingPlayerFoodBefore);
-				buyingPlayer.setMoney(buyingPlayerMoneyBefore);
-				sellingPlayer = new Player(null);
-				sellingPlayer.setOre(sellingPlayerOreBefore);
-				sellingPlayer.setEnergy(sellingPlayerEnergyBefore);
-				sellingPlayer.setFood(sellingPlayerFoodBefore);
-				sellingPlayer.setMoney(sellingPlayerMoneyBefore);
-				
-				
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures that it
-			 * returns the correct value
-			 */
-			@Test
-			public void testCorrectReturnValue(){
-				assertEquals(expectedReturnValue,sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit));
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the buying
-			 * player is left with the correct amount of energy
-			 */
-			@Test
-			public void testCorrectEnergyBuyingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(buyingPlayerEnergyBefore+buyingPlayerExpectedEnergyChange,buyingPlayer.getEnergy());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the buying
-			 * player is left with the correct amount of ore
-			 */
-			@Test
-			public void testCorrectOreBuyingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(buyingPlayerOreBefore+buyingPlayerExpectedOreChange,buyingPlayer.getOre());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the buying
-			 * player is left with the correct amount of ore
-			 */
-			@Test
-			public void testCorrectFoodBuyingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(buyingPlayerFoodBefore+buyingPlayerExpectedFoodChange,buyingPlayer.getFood());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the buying
-			 * player is left with the correct amount of money
-			 */
-			@Test
-			public void testCorrectMoneyBuyingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(buyingPlayerMoneyBefore-buyingPlayerExpectedMoneyChange,buyingPlayer.getMoney());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the selling
-			 * player is left with the correct amount of energy
-			 */
-			@Test
-			public void testCorrectEnergySellingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(sellingPlayerEnergyBefore-sellingPlayerExpectedEnergyChange,sellingPlayer.getEnergy());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the selling
-			 * player is left with the correct amount of ore
-			 */
-			@Test
-			public void testCorrectOreSellingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(sellingPlayerOreBefore-sellingPlayerExpectedOreChange,sellingPlayer.getOre());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the selling
-			 * player is left with the correct amount of ore
-			 */
-			@Test
-			public void testCorrectFoodSellingPlayer(){
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(sellingPlayerFoodBefore-sellingPlayerExpectedFoodChange,sellingPlayer.getFood());
-			}
-			
-			/**
-			 * Tests {@link Player#sellResourceToPlayer(Player, int, ResourceType, int)} ensures the selling
-			 * player is left with the correct amount of money
-			 */
-			@Test
-			public void testCorrectMoneySellingPlayer(){
-				
-				sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
-				assertEquals(sellingPlayerMoneyBefore+sellingPlayerExpectedMoneyChange,sellingPlayer.getMoney());
-			}
-			
-		}
 		
+		//Exists in this class as well as PlayerUnitTest because this version depends on the market
 		/**
 		 * Tests {@link Player#getScore()} using  player objects with varying quantities of money, ore, energy and food
 		 * and ensures that the correct result is returned
@@ -1170,6 +918,14 @@ public class PlayerTest {
 				 
 				 return Arrays.asList(new Object[][] {
 			         {1,1,1,ResourceType.ORE,0,0,0,ResourceType.Unknown,0,0,0,ResourceType.Unknown,1,0,0},
+			         {1,1,1,ResourceType.ENERGY,0,0,0,ResourceType.Unknown,0,0,0,ResourceType.Unknown,0,1,0},
+			         {1,1,1,ResourceType.FOOD,0,0,0,ResourceType.Unknown,0,0,0,ResourceType.Unknown,0,0,1},
+			         {1,1,1,ResourceType.ORE,1,1,1,ResourceType.ORE,1,1,1,ResourceType.ORE,3,0,0},
+			         {1,1,1,ResourceType.ENERGY,1,1,1,ResourceType.ENERGY,1,1,1,ResourceType.ENERGY,0,3,0},
+			         {1,1,1,ResourceType.FOOD,1,1,1,ResourceType.FOOD,1,1,1,ResourceType.FOOD,0,0,3},
+			         {1,15,1,ResourceType.FOOD,1,1,1,ResourceType.ENERGY,1,1,1,ResourceType.ORE,1,1,15},
+			   
+				      
 			      });
 			}
 			
@@ -1188,27 +944,32 @@ public class PlayerTest {
 				plot2 = new LandPlot(plot2OreValue,plot2EnergyValue,plot2FoodValue);
 				plot3 = new LandPlot(plot3OreValue,plot3EnergyValue,plot3FoodValue);
 				
-				if(plot1RoboticonCustomisation == ResourceType.FOOD || plot1RoboticonCustomisation == ResourceType.ORE || plot1RoboticonCustomisation == ResourceType.ENERGY){
-					r1.setCustomisation(plot1RoboticonCustomisation);
-					plot1.setHasRoboticon(true);
-					plot1.installRoboticon(r1);
-				}
-				
-				if(plot2RoboticonCustomisation == ResourceType.FOOD || plot2RoboticonCustomisation == ResourceType.ORE || plot2RoboticonCustomisation == ResourceType.ENERGY){
-					r2.setCustomisation(plot2RoboticonCustomisation);
-					plot2.setHasRoboticon(true);
-					plot2.installRoboticon(r2);
-				}
-				
-				if(plot3RoboticonCustomisation == ResourceType.FOOD || plot3RoboticonCustomisation == ResourceType.ORE || plot3RoboticonCustomisation == ResourceType.ENERGY){
-					r3.setCustomisation(plot3RoboticonCustomisation);
-					plot3.setHasRoboticon(true);
-					plot3.installRoboticon(r3);
-				}
+				plot1.setOwner(player);
+				plot2.setOwner(player);
+				plot3.setOwner(player);
 				
 				player.addLandPlot(plot1);
 				player.addLandPlot(plot2);
 				player.addLandPlot(plot3);
+				
+				if(plot1RoboticonCustomisation == ResourceType.FOOD || plot1RoboticonCustomisation == ResourceType.ORE || plot1RoboticonCustomisation == ResourceType.ENERGY){
+					r1.setCustomisation(plot1RoboticonCustomisation);
+					plot1.installRoboticon(r1);
+					plot1.setHasRoboticon(true);
+				}
+				
+				if(plot2RoboticonCustomisation == ResourceType.FOOD || plot2RoboticonCustomisation == ResourceType.ORE || plot2RoboticonCustomisation == ResourceType.ENERGY){
+					r2.setCustomisation(plot2RoboticonCustomisation);
+					plot2.installRoboticon(r2);
+					plot2.setHasRoboticon(true);
+				}
+				
+				if(plot3RoboticonCustomisation == ResourceType.FOOD || plot3RoboticonCustomisation == ResourceType.ORE || plot3RoboticonCustomisation == ResourceType.ENERGY){
+					r3.setCustomisation(plot3RoboticonCustomisation);
+					plot3.installRoboticon(r3);
+					plot3.setHasRoboticon(true);
+				}
+				
 			}
 			
 			/**
@@ -1216,7 +977,7 @@ public class PlayerTest {
 			 * to the player's inventory
 			 */
 			@Test
-			public void testCorrectEnergyGenerated(){
+			public void testCorrectEnergyAddedToInventory(){
 				int energyBefore = player.getEnergy();
 				player.generateResources();
 				
@@ -1228,10 +989,9 @@ public class PlayerTest {
 			 * to the player's inventory
 			 */
 			@Test
-			public void testCorrectOreGenerated(){
+			public void testCorrectOreAddedToInventory(){
 				int oreBefore = player.getOre();
 				player.generateResources();
-				
 				assertEquals(oreBefore+expectedAmountOfOre,player.getOre());
 			}
 			
@@ -1240,17 +1000,40 @@ public class PlayerTest {
 			 * to the player's inventory
 			 */
 			@Test
-			public void testCorrectFoodGenerated(){
+			public void testCorrectFoodAddedToInventory(){
 				int foodBefore = player.getFood();
 				player.generateResources();
 				
 				assertEquals(foodBefore+expectedAmountOfFood,player.getFood());
 			}
 			
+			/**
+			 * Tests {@link Player#generateResources()} ensures that the correct amount of energy is returned
+			 */
+			@Test
+			public void testCorrectEnergyReturned(){
+				assertEquals(expectedAmountOfEnergy,player.generateResources().get(ResourceType.ENERGY));
+			}
 			
+			/**
+			 * Tests {@link Player#generateResources()} ensures that the correct amount of ore is returned
+			 */
+			@Test
+			public void testCorrectOreReturned(){
+				assertEquals(expectedAmountOfOre,player.generateResources().get(ResourceType.ORE));
+			}
 			
+			/**
+			 * Tests {@link Player#generateResources()} ensures that the correct amount of food is returned
+			 */
+			@Test
+			public void testCorrectFoodReturned(){
+				assertEquals(expectedAmountOfFood,player.generateResources().get(ResourceType.FOOD));
+			}
 		}
 		
+		// Due to the fact that these tests only rely on 2 getter methods from Roboticon
+		// there is not a separate unit test version of them
 		/**
 		 * Tests {@link Player#getCustomisedRoboticonAmountList()} using player objects with differning numbers of roboticons of various
 		 * types and ensures that the correct values are returned
@@ -1263,6 +1046,9 @@ public class PlayerTest {
 			private int numberOfEnergyRoboticons;
 			private int numberOfOreRoboticons;
 			private int numberOfFoodRoboticons;
+			private int numberOfOreRoboticonsAlreadyPlaced;
+			private int numberOfEnergyRoboticonsAlreadyPlaced;
+			private int numberOfFoodRoboticonsAlreadyPlaced;
 			
 			private Player player;
 			private LandPlot plot1,plot2,plot3;
@@ -1271,11 +1057,17 @@ public class PlayerTest {
 			public PlayerGetCustomisedRoboticonAmountListParamaterisedTests(int numberOfUncustomisedRoboticons,
 															int numberOfEnergyRoboticons,
 															int numberOfOreRoboticons,
-															int numberOfFoodRoboticons){
+															int numberOfFoodRoboticons,
+															int numberOfOreRoboticonsAlreadyPlaced,
+															int numberOfEnergyRoboticonsAlreadyPlaced,
+															int numberOfFoodRoboticonsAlreadyPlaced){
 				this.numberOfUncustomisedRoboticons = numberOfUncustomisedRoboticons;
 				this.numberOfEnergyRoboticons = numberOfEnergyRoboticons;
 				this.numberOfOreRoboticons = numberOfOreRoboticons;
 				this.numberOfFoodRoboticons = numberOfFoodRoboticons;
+				this.numberOfOreRoboticonsAlreadyPlaced = numberOfOreRoboticonsAlreadyPlaced;
+				this.numberOfEnergyRoboticonsAlreadyPlaced = numberOfEnergyRoboticonsAlreadyPlaced;
+				this.numberOfFoodRoboticonsAlreadyPlaced = numberOfFoodRoboticonsAlreadyPlaced;
 			}
 			
 			/**
@@ -1285,19 +1077,24 @@ public class PlayerTest {
 			public static Collection playerCustomisedRoboticonAmountListTestValues(){
 				 
 				 return Arrays.asList(new Object[][] {
-			         {15,1,1,1},
-			         {0,1,1,1},
-			         {16,1,2,3},
-			         {16,6,7,2},
-			         {15,2,2,2},
-			         {1111,67,89,10},
-			         {112135,1,0,0},
-			         {112315,0,0,1},
-			         {1335,0,1,0},
-			         {112135,20,0,0},
-			         {112315,0,0,34},
-			         {1335,0,56,0},
-			         {0,20,56,34},
+			         {15,1,1,1,0,0,0},
+			         {0,1,1,1,0,0,0},
+			         {16,1,2,3,0,0,0},
+			         {16,6,7,2,0,0,0},
+			         {15,2,2,2,0,0,0},
+			         {1111,67,89,10,0,0,0},
+			         {112135,1,0,0,0,0,0},
+			         {112315,0,0,1,0,0,0},
+			         {1335,0,1,0,0,0,0},
+			         {112135,20,0,0,0,0,0},
+			         {112315,0,0,34,0,0,0},
+			         {1335,0,56,0,0,0,0},
+			         {0,20,56,34,0,0,0},
+			         {15,1,1,1,0,1,1},
+			         {1111,67,89,10,3,0,0},
+			         {1111,67,89,10,0,4,0},
+			         {1111,67,89,10,0,0,2},
+			         {1111,67,89,10,1,3,9},
 			      });
 			}
 			
@@ -1314,22 +1111,43 @@ public class PlayerTest {
 					player.roboticonList.add(roboticon);
 				}
 				
+				int numberToPlace = numberOfOreRoboticonsAlreadyPlaced;
 				for(int ore =0; ore<numberOfOreRoboticons; ore++){
 					Roboticon roboticon = new Roboticon(ore);
 					roboticon.setCustomisation(ResourceType.ORE);
 					player.roboticonList.add(roboticon);
+		
+					if(numberToPlace>0){
+						numberToPlace--;
+						LandPlot plot = new LandPlot(0, 0, 0);
+						roboticon.setInstalledLandplot(plot);
+					}
 				}
 				
+				numberToPlace = numberOfEnergyRoboticonsAlreadyPlaced;
 				for(int energy =0; energy<numberOfEnergyRoboticons; energy++){
 					Roboticon roboticon = new Roboticon(energy);
 					roboticon.setCustomisation(ResourceType.ENERGY);
 					player.roboticonList.add(roboticon);
+					
+					if(numberToPlace>0){
+						numberToPlace--;
+						LandPlot plot = new LandPlot(0, 0, 0);
+						roboticon.setInstalledLandplot(plot);
+					}
 				}
 				
+				numberToPlace = numberOfFoodRoboticonsAlreadyPlaced;
 				for(int food =0; food<numberOfFoodRoboticons; food++){
 					Roboticon roboticon = new Roboticon(food);
 					roboticon.setCustomisation(ResourceType.FOOD);
 					player.roboticonList.add(roboticon);
+					
+					if(numberToPlace>0){
+						numberToPlace--;
+						LandPlot plot = new LandPlot(0, 0, 0);
+						roboticon.setInstalledLandplot(plot);
+					}
 				}
 			}
 			
@@ -1349,7 +1167,7 @@ public class PlayerTest {
 			@Test
 			public void testCorrectOre(){
 				Array<String> roboticonList = player.getCustomisedRoboticonAmountList();
-				assertEquals("ore specific x "+Integer.toString(numberOfOreRoboticons),roboticonList.get(0).toLowerCase());
+				assertEquals("ore specific x "+Integer.toString(numberOfOreRoboticons-numberOfOreRoboticonsAlreadyPlaced),roboticonList.get(0).toLowerCase());
 			}
 			
 			/**
@@ -1358,7 +1176,7 @@ public class PlayerTest {
 			@Test
 			public void testCorrectEnergy(){
 				Array<String> roboticonList = player.getCustomisedRoboticonAmountList();
-				assertEquals("energy specific x "+Integer.toString(numberOfEnergyRoboticons),roboticonList.get(1).toLowerCase());
+				assertEquals("energy specific x "+Integer.toString(numberOfEnergyRoboticons-numberOfEnergyRoboticonsAlreadyPlaced),roboticonList.get(1).toLowerCase());
 			}
 			
 			/**
@@ -1366,8 +1184,10 @@ public class PlayerTest {
 			 */
 			@Test
 			public void testCorrectFood(){
+				System.out.println(numberOfFoodRoboticons);
+				System.out.println(numberOfFoodRoboticonsAlreadyPlaced);
 				Array<String> roboticonList = player.getCustomisedRoboticonAmountList();
-				assertEquals("food specific x "+Integer.toString(numberOfFoodRoboticons),roboticonList.get(2).toLowerCase());
+				assertEquals("food specific x "+Integer.toString(numberOfFoodRoboticons-numberOfFoodRoboticonsAlreadyPlaced),roboticonList.get(2).toLowerCase());
 			}
 			
 		}

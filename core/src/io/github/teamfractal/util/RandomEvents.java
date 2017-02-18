@@ -1,6 +1,7 @@
 package io.github.teamfractal.util;
 
 import io.github.teamfractal.RoboticonQuest;
+import io.github.teamfractal.entity.enums.ResourceType;
 
 // Class created by Josh Neil - contains code needed to implement random events
 /**
@@ -46,14 +47,36 @@ public class RandomEvents {
 		return treasure;
 	}
 	/**
-	 * Returns an integer representing the amount of food lost and
-	 * halves the amount of food a player has.
-	 * @return An integer representing the amount of food lost.
+	 * Returns an integer representing the amount of resource lost
+	 * halves the amount of highest resource a player has.
+	 * @return An integer representing the amount of resource lost.
 	 */
-	public static int geese(RoboticonQuest game){
+	public static int geeseStealResources(RoboticonQuest game){
 		int food = game.getPlayer().getFood();
-		game.getPlayer().setFood(food - food/2);
+		int energy = game.getPlayer().getEnergy();
+		int ore = game.getPlayer().getOre();
+		
+		if (food > ore){
+			if (food > energy){
+			game.getPlayer().setFood(food - food/2);
 		return (food/2);
+			}
+			else{
+				game.getPlayer().setEnergy(energy - energy/2);
+				return (energy/2);
+			}
+		}
+		else{
+			if (ore > energy){
+				game.getPlayer().setOre(ore - ore/2);
+			return (ore/2);
+				}
+				else{
+					game.getPlayer().setEnergy(energy - energy/2);
+					return (energy/2);
+				}
+			
+		}
 	}
 	
 	

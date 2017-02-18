@@ -11,12 +11,19 @@ import io.github.teamfractal.exception.NotCommonResourceException;
 import io.github.teamfractal.exception.NotEnoughResourceException;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Random;
 
 import static io.github.teamfractal.entity.enums.ResourceType.ENERGY;
 import static io.github.teamfractal.entity.enums.ResourceType.FOOD;
 import static io.github.teamfractal.entity.enums.ResourceType.ORE;
 
+/**
+ * Holds all data relating to a single player and implements the logic required
+ * for players to buy and sell to/from the market and other players, aquire land and 
+ * make that land produce resources
+ */
 public class Player {
 	//<editor-fold desc="Resource getter and setter">
 	private int money = 100;
@@ -425,10 +432,16 @@ public class Player {
 		return this.roboticonList;
 	}
 
+	// Modified by Josh Neil to return a HashMap that maps ResourceType onto the number
+	// of that type of resource that was produced. This is so that RoboticonQuest can use this
+	// information to produce an animation that displays the resources generated. This
+	// method use to produce that animation but that caused problems with testing (automated
+	// testing of LibGDX dependent classes is tricky).
 	/**
 	 * Generate resources produced from each LandPlot
+	 * @return A HashMap that maps ResourceType onto the quantity of that resource that was generated
 	 */
-	public void generateResources() {
+	public HashMap generateResources() {
 		int energy = 0;
 		int food = 0;
 		int ore = 0;
@@ -443,16 +456,12 @@ public class Player {
 		setFood(getFood() + food);
 		setOre(getOre() + ore);
 
-		IAnimation animation = new AnimationAddResources(this, energy, food, ore);
-		animation.setAnimationFinish(new IAnimationFinish() {
-			@Override
-			public void OnAnimationFinish() {
-				if (game.getPlayer() == Player.this){
-					game.nextPhase();
-				}
-			}
-		});
-		game.gameScreen.addAnimation(animation);
+		// Added by Josh Neil
+		HashMap<ResourceType, Integer> returnValues = new HashMap<ResourceType, Integer>();
+		returnValues.put(ResourceType.FOOD, food);
+		returnValues.put(ResourceType.ENERGY, energy);
+		returnValues.put(ResourceType.ORE, ore);
+		return returnValues;
 	}
 	
 	/////// Added by Josh Neil to support the random event where a roboticon is faulty and breaks - Josh Neil
