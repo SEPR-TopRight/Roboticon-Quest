@@ -44,7 +44,6 @@ public class GameScreenActors {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	private SoundEffects gameAudio;
 
 	/**
 	 * Initialise the main game screen components.
@@ -59,7 +58,6 @@ public class GameScreenActors {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/space-stars.jpeg")));
-		gameAudio = new SoundEffects();
 
 	}
 
@@ -144,7 +142,7 @@ public class GameScreenActors {
 		buyLandPlotBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				event.stop();
 				hideBuyLand();
 				if (buyLandPlotBtn.isDisabled()) {
@@ -160,13 +158,14 @@ public class GameScreenActors {
 				if (player.purchaseLandPlot(selectedPlot)) {
 					//Added a random event where the player finds a chest containing money - Christian Beddows
 					if (RandomEvents.tileHasChest()){
-						gameAudio.chime();
+						SoundEffects.chime();
 						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(game);
 						stage.addActor(new MessagePopUp("You found a treasure chest!","On your new tile you "
 								+ "find a buried treasure chest containing " + Integer.toString(playerTreasure) + " money!"));
 					}
 					//Added a random event where you disturb a flock of geese on a plot - Ben
 					if (RandomEvents.geeseAttack()){
+						SoundEffects.anxiety();
 						int food = RandomEvents.geeseStealResources(game);
 						stage.addActor(new MessagePopUp("Disturbed a flock of Geese!","On your new tile you "
 								+ "discover a flock of geese they attack!, you lost " + Integer.toString(food) + " food!"));
@@ -177,6 +176,7 @@ public class GameScreenActors {
 				}
 				//Added a popup if you dont have enough money to buy a plot - Ben
 				else{
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to buy this plot."));
 				}
 			}
@@ -185,7 +185,7 @@ public class GameScreenActors {
 		nextButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				event.stop();
 				if (nextButton.isDisabled()) {
 					return ;
@@ -207,7 +207,7 @@ public class GameScreenActors {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				event.stop();
 				if (installRoboticonBtn.isDisabled()) {
 					return ;
@@ -249,6 +249,7 @@ public class GameScreenActors {
 							///// else branch followed by textUpdate()
 							if(RandomEvents.roboticonIsFaulty()){
 								// Roboticon was faulty and has broken (cannot be placed)
+								SoundEffects.pulse();
 								game.getPlayer().removeRoboticon(roboticon);
 								stage.addActor(new MessagePopUp("That roboticon was faulty","That roboticon was faulty and exploded!"));
 							}
@@ -273,7 +274,7 @@ public class GameScreenActors {
 		installRoboticonBtnCancel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				event.stop();
 				dropDownActive = false;
 				hideInstallRoboticon();
@@ -289,6 +290,7 @@ public class GameScreenActors {
 	 * @param y    Current mouse y position
 	 */
 	public void tileClicked(LandPlot plot, float x, float y) {
+		SoundEffects.click();
 		Player player = game.getPlayer();
 
 		switch (game.getPhase()) {

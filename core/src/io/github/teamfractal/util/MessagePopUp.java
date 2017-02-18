@@ -32,7 +32,6 @@ public class MessagePopUp extends Dialog{
 		setSize(getPrefWidth(),getPrefHeight());
 		
 		moveToMiddleOfScreen();
-		SoundEffects.chime();
 	}
 
 	/**

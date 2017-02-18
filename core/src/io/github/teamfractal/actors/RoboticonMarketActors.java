@@ -69,7 +69,7 @@ public class RoboticonMarketActors extends Table {
 		this.screen = screen;
 		final Stage stage = screen.getStage(); // Added by Josh Neil
 		
-		Market market = game.market; // Added by Josh Neil
+		final Market market = game.market; // Added by Josh Neil
 
 		this.roboticonID = new Label("", game.skin);
 		this.marketStats = new Label("", game.skin);
@@ -88,6 +88,7 @@ public class RoboticonMarketActors extends Table {
 			public void changed(ChangeEvent event, Actor actor) {
 				gameAudio.click();
 				if(!market.attemptToProduceRoboticon()){
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough ore!","The market does not have enough ore to produce a roboticon!"));
 				}
 				else{
@@ -136,6 +137,7 @@ public class RoboticonMarketActors extends Table {
 				gameAudio.click();
 				//added a popup if player doesnt have enough money to buy roboticons - ben
 				if (game.getPlayer().getMoney() < (roboticonAmount*game.market.getSellPrice(ResourceType.ROBOTICON))){
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to buy these roboticons."));
 				}
 				else{
@@ -212,6 +214,7 @@ public class RoboticonMarketActors extends Table {
 				//added a popup if player doesnt have enough money to customise roboticons - ben
 
 				if (game.getPlayer().getMoney() < market.getSellPrice(ResourceType.CUSTOMISATION)){
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to customise theese roboticons."));
 
 				}

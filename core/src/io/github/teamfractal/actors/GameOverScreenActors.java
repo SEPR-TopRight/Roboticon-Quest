@@ -33,7 +33,7 @@ public class GameOverScreenActors extends HomeMainMenu {
 	
 	/**
 	 * Creates a label for each player that displays their score and adds this label to the screen
-	 * @param playerList The players that just finished playing the game
+	 * @param game for the playerList: The players that just finished playing the game
 	 */
 	private void createAndAddScoreLabels(RoboticonQuest game){
 		ArrayList<Player> playerList = game.playerList;
