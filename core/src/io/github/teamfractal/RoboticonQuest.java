@@ -20,11 +20,7 @@ import io.github.teamfractal.animation.IAnimationFinish;
 import io.github.teamfractal.screens.*;
 import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Player;
-<<<<<<< HEAD
-import io.github.teamfractal.util.SoundEffects;
-=======
 import io.github.teamfractal.entity.enums.ResourceType;
->>>>>>> josh
 import io.github.teamfractal.util.PlotManager;
 
 /**
@@ -53,11 +49,7 @@ public class RoboticonQuest extends Game {
 	public ArrayList<Player> playerList;
 	public Market market;
 	private int landBoughtThisTurn;
-<<<<<<< HEAD
 	private Music gameMusic;
-	private SoundEffects gameAudio;
-=======
->>>>>>> josh
 
 	/**
 	 * Returns the index at which a given player is stored in the playerList
@@ -92,13 +84,10 @@ public class RoboticonQuest extends Game {
 
 		setScreen(mainMenuScreen);
 
-<<<<<<< HEAD
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/squaredance.mp3"));
 		gameMusic.play();
 		gameMusic.setLooping(true);
-=======
 		//startMusic();
->>>>>>> josh
 	}
 
 	/**
@@ -110,8 +99,6 @@ public class RoboticonQuest extends Game {
 	}
 
 	/**
-<<<<<<< HEAD
-=======
 	 * Initialises and starts the music playing
 	 * @author cb1423
 	 */
@@ -120,7 +107,6 @@ public class RoboticonQuest extends Game {
 		//gameMusic.play();
 	}
 	/**
->>>>>>> josh
 	 * Setup the default skin for GUI components.
 	 */
 	private void setupSkin() {

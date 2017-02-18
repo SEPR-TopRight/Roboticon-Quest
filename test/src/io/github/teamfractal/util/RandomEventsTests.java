@@ -176,7 +176,7 @@ public class RandomEventsTests {
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 2 when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns 2 when the current
 	 * player has 5 food in their inventory
 	 */
 	@Test
@@ -185,11 +185,11 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(4);
-		assertEquals(2,RandomEvents.geese(game));
+		assertEquals(2,RandomEvents.geeseStealResources(game));
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that 2 food are taken out of the players inventory
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that 2 food are taken out of the players inventory
 	 * when the player has 5 food in their inventory
 	 */
 	@Test
@@ -198,7 +198,7 @@ public class RandomEventsTests {
 		Player player = new Player(game); // Ensures at least one player in the game
 		player = game.getPlayer();
 		player.setFood(5);
-		RandomEvents.geese(game);
+		RandomEvents.geeseStealResources(game);
 		assertEquals(3,player.getFood());
 	}
 	

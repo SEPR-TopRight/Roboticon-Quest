@@ -49,17 +49,13 @@ public class ResourceMarketActors extends Table {
 	
 	private Table marketTransactionWidget, playerToPlayerTransactionWidget;
 
-<<<<<<< HEAD
 	private TextButton playerToPlayerTransactionButton, marketTransactionButton;
 
 	private Image backgroundImage;
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-=======
-	private Texture backgroundImage;
-	private SpriteBatch batch;
->>>>>>> josh
+
 	
 	/**
 	 * Initialise market actors.

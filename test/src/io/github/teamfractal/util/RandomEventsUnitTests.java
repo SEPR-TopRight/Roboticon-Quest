@@ -106,7 +106,7 @@ public class RandomEventsUnitTests {
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns zero when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns zero when the current
 	 * player has no food in their inventory
 	 */
 	@Test
@@ -117,12 +117,12 @@ public class RandomEventsUnitTests {
 			game.getPlayer();result=player;
 			player.setFood(0);
 		}};
-		assertEquals(0,RandomEvents.geese(game));
+		assertEquals(0,RandomEvents.geeseStealResources(game));
 	}
 	
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 0 when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns 0 when the current
 	 * player has 1 in their inventory
 	 */
 	@Test
@@ -133,12 +133,12 @@ public class RandomEventsUnitTests {
 			game.getPlayer();result=player;
 			player.setFood(1);
 		}};
-		assertEquals(0,RandomEvents.geese(game));
+		assertEquals(0,RandomEvents.geeseStealResources(game));
 	}
 
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 2 when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns 2 when the current
 	 * player has 4 in their inventory
 	 */
 	@Test
@@ -150,11 +150,11 @@ public class RandomEventsUnitTests {
 			player.setFood(2);
 		}};
 	
-		assertEquals(2,RandomEvents.geese(game));
+		assertEquals(2,RandomEvents.geeseStealResources(game));
 	}
 	
 	/**
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns 2 when the current
+	 * Tests {@link RandomEvents#geeseStealResources(RoboticonQuest)} and ensures that it returns 2 when the current
 	 * player has 5 in their inventory
 	 */
 	@Test
@@ -166,7 +166,7 @@ public class RandomEventsUnitTests {
 			player.setFood(3);
 		}};
 	
-		assertEquals(2,RandomEvents.geese(game));
+		assertEquals(2,RandomEvents.geeseStealResources(game));
 	}
 	
 	
