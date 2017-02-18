@@ -55,7 +55,6 @@ public class ResourceMarketActors extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-
 	
 	/**
 	 * Initialise market actors.
@@ -191,10 +190,12 @@ public class ResourceMarketActors extends Table {
 			// Not possible, with the current implementation for the player to attempt to buy more of a given resource than
 			// is available, left this code here in case that changes!
 			if(purchaseStatus== PurchaseStatus.FailMarketNotEnoughResource){
+				SoundEffects.error();
 				stage.addActor(new MessagePopUp("Not enough " + resourceString+"!",
 						"The market does not have enough " + resourceString+"!"));
 			}
 			else if(purchaseStatus== PurchaseStatus.FailPlayerNotEnoughMoney){
+				SoundEffects.error();
 				stage.addActor(new MessagePopUp("Not enough money!",
 						"Player "+Integer.toString(playerIndex+1)+" does not have enough money to buy "+
 						Integer.toString(quantity)+" "+resourceString+"!"));

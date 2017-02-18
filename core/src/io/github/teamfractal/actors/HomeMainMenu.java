@@ -10,11 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
 import io.github.teamfractal.RoboticonQuest;
-
 import io.github.teamfractal.util.SoundEffects;
-
 
 /**
  * Creates all of the UI widgets that are displayed on the main menu screen
@@ -28,7 +25,6 @@ public class HomeMainMenu extends Table {
 	private SpriteBatch batch;
 	private float scaleFactorX;
 	private float scaleFactorY;
-	private SoundEffects gameAudio;
 
 	private static Texture titleTexture = new Texture(Gdx.files.internal("roboticon_images/Roboticon_Quest_Title"));
 
@@ -42,7 +38,6 @@ public class HomeMainMenu extends Table {
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
 		backgroundImage = new Image(new Texture(Gdx.files.internal("background/corridor.jpg")));
-		gameAudio = new SoundEffects();
 
 		// Create UI Components
 		final Image imgTitle = new Image();
@@ -94,7 +89,7 @@ public class HomeMainMenu extends Table {
 		btnNewGame.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				game.setScreen(game.gameScreen);
 				game.gameScreen.newGame();
 			}
@@ -103,7 +98,7 @@ public class HomeMainMenu extends Table {
 		btnExit.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
-				gameAudio.click();
+				SoundEffects.click();
 				Gdx.app.exit();
 			}
 		});

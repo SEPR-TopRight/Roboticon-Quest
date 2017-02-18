@@ -247,6 +247,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		tiles = tmx.getTileSets();
 		TileConverter.setup(tiles, game);
 		renderer = new IsometricStaggeredTiledMapRenderer(tmx);
+		renderer.getViewBounds().setCenter(getScreenSize().Width, getScreenSize().Height);
 		game.reset();
 
 		mapLayer = (TiledMapTileLayer)tmx.getLayers().get("MapData");
