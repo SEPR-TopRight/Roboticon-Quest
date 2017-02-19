@@ -19,6 +19,7 @@ import io.github.teamfractal.screens.AbstractAnimationScreen;
 import io.github.teamfractal.screens.GameScreen;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.TileConverter;
 
 /**

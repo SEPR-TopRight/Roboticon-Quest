@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import io.github.teamfractal.RoboticonQuest;
 import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Player;
+import io.github.teamfractal.entity.enums.GamblingResult;
 import io.github.teamfractal.entity.enums.PurchaseStatus;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.ResourceMarketScreen;
@@ -47,9 +48,12 @@ public class ResourceMarketActors extends Table {
 	private Label[] playerStatsLabels;
 	private final Stage stage;
 	
-	private Table marketTransactionWidget, playerToPlayerTransactionWidget;
+	private SelectBox<String> gamblingPlayerDropDown;
+	private AdjustableActor gamblingAdjustableActor;
+	
+	private Table marketTransactionWidget, playerToPlayerTransactionWidget, gamblingWidget;
 
-	private TextButton playerToPlayerTransactionButton, marketTransactionButton;
+	private TextButton playerToPlayerTransactionButton, marketTransactionButton, gambleButton;
 
 	private Image backgroundImage;
 	private SpriteBatch batch;
@@ -95,6 +99,7 @@ public class ResourceMarketActors extends Table {
 		// Added by Josh
 		marketTransactionWidget = createMarketTransactionWidget();
 		playerToPlayerTransactionWidget = createPlayerToPlayerTransactionWidget();
+		gamblingWidget = createGamblingWidget();
 		
 		addAllWidgetsToScreen();
 		
@@ -210,6 +215,33 @@ public class ResourceMarketActors extends Table {
 	}
 	
 	/**
+	 * Called whenever a player has clicked the gamble button.
+	 * Creates a pop up window that displays the result and updates the inventory data that is isplayed on screen
+	 */
+	private void playerGambled(){
+		int playerIndex = gamblingPlayerDropDown.getSelectedIndex();
+		Player player = game.playerList.get(playerIndex);
+		int bet = gamblingAdjustableActor.getValue();
+		GamblingResult result = game.market.playerGamble(player, bet);
+		
+		if(result == GamblingResult.NOTENOUGHMONEY){
+			stage.addActor(new MessagePopUp("Not enough money!","Player "
+					+Integer.toString(playerIndex+1)+" does not have enough money to place that bet!"));
+		}
+		else if(result == GamblingResult.WON){
+			stage.addActor(new MessagePopUp("Player "+Integer.toString(playerIndex+1) + "won!",
+					"Player "+Integer.toString(playerIndex+1)+
+					" won!"));
+		}
+		else{
+			stage.addActor(new MessagePopUp("Player "+Integer.toString(playerIndex+1) + "lost!",
+					"Player "+Integer.toString(playerIndex+1)+
+					" lost!"));
+		}
+		widgetUpdate();
+	}
+	
+	/**
 	 * Creates the AdjustableActor that is used to specify the price players want to buy for each unit
 	 * of a given resource.
 	 */
@@ -225,6 +257,7 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerSellerDropDown = new SelectBox<String>(game.skin);
 		playerToPlayerBuyerDropDown = new SelectBox<String>(game.skin);
 		marketPlayerDropDown = new SelectBox<String>(game.skin);
+		gamblingPlayerDropDown = new SelectBox<String>(game.skin);
 		String[] players = new String[game.playerList.size()];
 		for(int player=0;player<game.playerList.size();player++){
 			players[player] = "Player "+Integer.toString(player+1);
@@ -232,6 +265,7 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerSellerDropDown.setItems(players);
 		playerToPlayerBuyerDropDown.setItems(players);
 		marketPlayerDropDown.setItems(players);
+		gamblingPlayerDropDown.setItems(players);
 	}
 	
 	/**
@@ -337,6 +371,26 @@ public class ResourceMarketActors extends Table {
 	}
 	
 	/**
+	 * Creates a table that contains all of the widgets that the player uses to 
+	 * to gamble 100 of their credits.
+	 * <p>
+	 * All placed in a table so treated like 1 single widget by LibGDX
+	 * </p>
+	 * @return A table that contains all of the widgets that the player uses to to gamble 100 of their credits.
+	 */
+	private Table createGamblingWidget(){
+		Table container = new Table();
+		container.add(gamblingPlayerDropDown).padRight(10);
+		container.add(new Label("wishes to gamble",game.skin)).padRight(10);
+		gamblingAdjustableActor = new AdjustableActor(game.skin, 20, 1, 1000);
+		container.add(gamblingAdjustableActor).padRight(10);
+		container.add(new Label("credits",game.skin)).padRight(10);
+		gambleButton = new TextButton(" Place bet ",game.skin);
+		container.add(gambleButton);
+		return container;
+	}
+	
+	/**
 	 * Creates a table that is used to display the buying and selling prices of all the resources bought and sold by the market.
 	 * @param market The market in question
 	 * @return A table that is used to display the buying and selling prices of all the resources bought and sold by the market.
@@ -380,7 +434,9 @@ public class ResourceMarketActors extends Table {
 		row();
 		add(playerToPlayerTransactionWidget).left().padBottom(30);
 		row();
-		add(marketTransactionWidget).left();
+		add(marketTransactionWidget).left().padBottom(45);
+		row();
+		add(gamblingWidget).left();
 	}
 
 	/**
@@ -463,6 +519,14 @@ public class ResourceMarketActors extends Table {
 			public void clicked(InputEvent event, float x, float y) {
 				SoundEffects.click();
 				completeMarketTransaction();
+			}
+		});
+		
+		gambleButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
+				playerGambled();
 			}
 		});
 		

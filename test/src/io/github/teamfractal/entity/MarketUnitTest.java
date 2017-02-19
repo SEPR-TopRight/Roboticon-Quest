@@ -1,5 +1,7 @@
 package io.github.teamfractal.entity;
 
+import io.github.teamfractal.RoboticonQuest;
+import io.github.teamfractal.entity.enums.GamblingResult;
 import io.github.teamfractal.entity.enums.ResourceType;
 import mockit.*;
 import org.junit.*;
@@ -19,6 +21,8 @@ public class MarketUnitTest {
 	public final ExpectedException exception = ExpectedException.none();
 
 	private Market market;
+	@Mocked private Player player;
+	@Mocked private RoboticonQuest game;
 
 	/**
 	 * Reset market to its default status.
@@ -26,6 +30,8 @@ public class MarketUnitTest {
 	@Before
 	public void Contractor() {
 		market = new Market();
+		game = new RoboticonQuest();
+		player = new Player(game);
 	}
 
 	/**
@@ -134,6 +140,55 @@ public class MarketUnitTest {
 	}
 	
 	// Tests below this comment added by Josh Neil
+	
+	/**
+	 * Tests {@link Market#playerGamble(Player, int)} ensures that it returns GamblingResult.NOTENOUGHMONEY when
+	 * a player has no money (and the cost of the bet is at least 1)
+	 */
+	@Test
+	public void testPlayerGambleNoMoney(){
+		new Expectations(){{
+			player.getMoney();result=0;
+		}};
+		assertEquals(GamblingResult.NOTENOUGHMONEY,market.playerGamble(player, 10));
+	}
+	
+	/**
+	 * Tests {@link Market#playerGamble(Player, int)} ensures that it returns GamblingResult.NOTENOUGHMONEY when
+	 * a player has 1 less money than the bet
+	 */
+	@Test
+	public void testPlayerGambleOneLessMoneyThanBet(){
+		new Expectations(){{
+			player.getMoney();result=5;
+		}};
+		assertEquals(GamblingResult.NOTENOUGHMONEY,market.playerGamble(player, 6));
+	}
+	
+	/**
+	 * Tests {@link Market#playerGamble(Player, int)} ensures that it does not return GamblingResult.NOTENOUGHMONEY when
+	 * a player has exactly the same amount of money as the bet
+	 */
+	@Test
+	public void testPlayerGambleMoneySameAsBet(){
+		new Expectations(){{
+			player.getMoney();result=5;
+			player.getMoney();result=5;
+			player.setMoney(anyInt);
+		}};
+		assertNotEquals(GamblingResult.NOTENOUGHMONEY,market.playerGamble(player, 5));
+	}
+	
+	/**
+	 * Tests {@link Market#playerGamble(Player, int)} ensures that an IllegalArgumentException is thrown when a 
+	 * negative bet is passed to it
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testPlayerGambleNegativeBet(){
+		market.playerGamble(player,-1);
+		
+	}
+
 	/**
 	 * Tests {@link Market#setOre(int)} ensures that an exception is thrown when a negative value is passed to it
 	 */
