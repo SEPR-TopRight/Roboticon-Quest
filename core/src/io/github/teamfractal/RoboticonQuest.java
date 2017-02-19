@@ -199,23 +199,25 @@ public class RoboticonQuest extends Game {
 				}
 				
 			
-			// Added by Josh Neil - ensures that we go back to phase 1
+			// Added by Josh Neil - ensures that we go back to phase 1 if not all plots
+				// have been accquired and the game over screen if they have
 			case 6:
-				phase = newPhaseState =1;
-				// Deliberately falls through to the next case
-			
-			// Modified by Josh Neil so that we go to the game over screen once all plots have been acquired
-			// Phase 1: Enable of purchase LandPlot
-			case 1:
-				if(plotManager.allOwned() && currentPlayer == playerList.size()-1){
+				if(plotManager.allOwned()){
 					setScreen(new GameOverScreen(this));
+					break;
 				}
 				else{
-					gameScreen.showNextStageButton(); // Added by Josh Neil - next stage button hidden during resource generation
-					setScreen(gameScreen);
-					landBoughtThisTurn = 0;
-					gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));
+					phase = newPhaseState =1;
+					// Deliberately falls through to the next case
 				}
+				
+			
+			// Phase 1: Enable of purchase LandPlot
+			case 1:
+				gameScreen.showNextStageButton(); // Added by Josh Neil - next stage button hidden during resource generation
+				setScreen(gameScreen);
+				landBoughtThisTurn = 0;
+				gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));
 				break;
 			
 			
