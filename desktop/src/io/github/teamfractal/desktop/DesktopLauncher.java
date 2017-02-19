@@ -1,5 +1,5 @@
 // For pre-compiled version, please see:
-// https://github.com/TeamFractal/Roboticon-Quest/releases/download/v1.0.1/RoboticonQuest-1.0.1.zip
+// https://sepr-topright.github.io/SEPR/documentation/assessment3/game.zip
 
 package io.github.teamfractal.desktop;
 

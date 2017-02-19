@@ -1,5 +1,5 @@
 package io.github.teamfractal;
-
+// Executable version can be found here: https://sepr-topright.github.io/SEPR/documentation/assessment3/game.zip
 import java.util.ArrayList;
 import java.util.HashMap;
 
