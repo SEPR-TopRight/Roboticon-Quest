@@ -530,7 +530,7 @@ public class PlayerUnitTest {
 		}
 		
 		/**
-		 * Tests {@link Player#purchaseRoboticonsFromMarket(int, Market) ensures that the correct result is
+		 * Tests {@link Player#purchaseRoboticonsFromMarket(int, Market)} ensures that the correct result is
 		 * returned
 		 */
 		@Test
@@ -539,7 +539,7 @@ public class PlayerUnitTest {
 		}
 		
 		/**
-		 * Tests {@link Player#purchaseRoboticonsFromMarket(int, Market) ensures that when the player 
+		 * Tests {@link Player#purchaseRoboticonsFromMarket(int, Market)} ensures that when the player 
 		 * purchases roboticons the correct number of roboticons are added to their inventory
 		 */
 		@Test
@@ -550,7 +550,7 @@ public class PlayerUnitTest {
 		}
 		
 		/**
-		 * Tests {@link Player#purchaseRoboticonsFromMarket(int, Market) ensures that when the player 
+		 * Tests {@link Player#purchaseRoboticonsFromMarket(int, Market)} ensures that when the player 
 		 * purchases roboticons the correct amount of money is removed from their inventory
 		 */
 		@Test

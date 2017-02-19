@@ -36,7 +36,7 @@ public class MarketUnitTest {
 
 	/**
 	 * The market should start with correct amount of resources.
-	 * 16 Food & Energy, 0 Ore, 12 Robotics
+	 * 16 Food and Energy, 0 Ore, 12 Robotics
 	 */
 	@Test
 	public void marketShouldInitWithCorrectValues() {

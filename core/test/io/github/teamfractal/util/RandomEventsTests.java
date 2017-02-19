@@ -93,7 +93,6 @@ public class RandomEventsTests {
 	
 	/**
 	 * Tests {@link RandomEvents#geeseStealResources(Player, ResourceType)} with food and ensures that it returns zero when the current
-	 * Tests {@link RandomEvents#geese(RoboticonQuest)} and ensures that it returns zero when the current
 	 * player has no food in their inventory
 	 */
 	@Test

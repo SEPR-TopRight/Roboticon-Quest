@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 // Created by Josh Neil
 /**
- * Integration tests for {@link ScoreComparisons}, {@link Market} and {@link Player}
+ * Integration tests for {@link ScoreComparisons}, {@link io.github.teamfractal.entity.Market} and {@link io.github.teamfractal.entity.Player}
  * (note market is stored within game and thus not initialised here)
  */
 public class ScoreComparisonsTest {
