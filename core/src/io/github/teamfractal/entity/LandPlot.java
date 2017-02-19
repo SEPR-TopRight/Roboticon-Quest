@@ -170,7 +170,6 @@ public class LandPlot {
 		}
 		
 		if (roboticon.getCustomisation() != ResourceType.Unknown){
-			
 			int index = resourceTypeToIndex(roboticon.getCustomisation());
 			if (roboticon.setInstalledLandplot(this)) {
 				productionModifiers[index] += 1;

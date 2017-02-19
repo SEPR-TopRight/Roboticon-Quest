@@ -20,6 +20,7 @@ import io.github.teamfractal.screens.GameScreen;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
 import io.github.teamfractal.util.SoundEffects;
+import io.github.teamfractal.util.StringUtil;
 import io.github.teamfractal.util.TileConverter;
 
 /**
@@ -159,16 +160,17 @@ public class GameScreenActors {
 					//Added a random event where the player finds a chest containing money - Christian Beddows
 					if (RandomEvents.tileHasChest()){
 						SoundEffects.chime();
-						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(game);
+						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(player);
 						stage.addActor(new MessagePopUp("You found a treasure chest!","On your new tile you "
 								+ "find a buried treasure chest containing " + Integer.toString(playerTreasure) + " money!"));
 					}
 					//Added a random event where you disturb a flock of geese on a plot - Ben
 					if (RandomEvents.geeseAttack()){
 						SoundEffects.anxiety();
-						int food = RandomEvents.geeseStealResources(game);
+						ResourceType resource = RandomEvents.getResourceStolenByGeese(player);
+						int quantityLost = RandomEvents.geeseStealResources(player,resource);
 						stage.addActor(new MessagePopUp("Disturbed a flock of Geese!","On your new tile you "
-								+ "discover a flock of geese they attack!, you lost " + Integer.toString(food) + " food!"));
+								+ "discover a flock of geese they attack!, you lost " + Integer.toString(quantityLost) + " "+resource));
 					}
 					TiledMapTileLayer.Cell playerTile = selectedPlot.getPlayerTile();
 					playerTile.setTile(screen.getPlayerTile(player));
