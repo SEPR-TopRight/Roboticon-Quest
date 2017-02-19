@@ -178,6 +178,7 @@ public class RoboticonQuest extends Game {
 
 			// Phase 4: Purchase Resource
 			case 4:
+				gameScreen.hideNextStageButton(); // Added by Josh Neil
 				generateResources();
 				break;
 
@@ -210,6 +211,7 @@ public class RoboticonQuest extends Game {
 					setScreen(new GameOverScreen(this));
 				}
 				else{
+					gameScreen.showNextStageButton(); // Added by Josh Neil - next stage button hidden during resource generation
 					setScreen(gameScreen);
 					landBoughtThisTurn = 0;
 					gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));

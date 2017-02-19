@@ -263,6 +263,18 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
 	}
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	// (and then added to the screen again afterwards)
+	public void hideNextStageButton(){
+		actors.hideNextStageButton();
+	}
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	// (and then added to the screen again afterwards)
+	public void showNextStageButton(){
+		actors.showNextStageButton();
+	}
 
 
 	//Modified by Christian Beddows to add a background image

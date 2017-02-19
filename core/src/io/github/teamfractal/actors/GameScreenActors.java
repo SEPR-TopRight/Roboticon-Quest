@@ -422,4 +422,16 @@ public class GameScreenActors {
 	public boolean installRoboticonVisible() {
 		return installRoboticonTable.isVisible();
 	}
+
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	public void hideNextStageButton() {
+		nextButton.setVisible(false);
+	}
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	// (and then added to the screen again afterwards)
+	public void showNextStageButton(){
+		nextButton.setVisible(true);
+	}
 }
