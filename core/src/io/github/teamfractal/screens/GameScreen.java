@@ -51,10 +51,6 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private float maxDragX;
 	private float maxDragY;
 	private TiledMapTileSets tiles;
-	
-	private Texture backgroundImage = new Texture(Gdx.files.internal("background/newbg.png"));
-	private TextureRegion region =
-		    new TextureRegion(backgroundImage, 0, 0, 800, 420);
 
 	public LandPlot getSelectedPlot() {
 		return selectedPlot;
@@ -359,7 +355,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 
 	/**
 	 * 
-	 * @return the tmx map pf plot tiles used in the game
+	 * @return the tmx map of plot tiles used in the game
 	 */
 	public TiledMap getTmx(){
 		return this.tmx;

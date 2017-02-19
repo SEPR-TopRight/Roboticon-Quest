@@ -199,10 +199,11 @@ public class RoboticonQuest extends Game {
 				}
 				
 			
-			// Added by Josh Neil - ensures that we go back to phase 1 if not all plots
-				// have been accquired and the game over screen if they have
+			// Added by Josh Neil - ensures that we go back to phase 1 if not all plots have been acquired or the last
+				// player has not yet had their turn
+				// and the game over screen otherwise
 			case 6:
-				if(plotManager.allOwned()){
+				if(plotManager.allOwned() && currentPlayer == playerList.size() -1){
 					setScreen(new GameOverScreen(this));
 					break;
 				}
