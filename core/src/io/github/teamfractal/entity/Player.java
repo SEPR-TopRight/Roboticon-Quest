@@ -356,7 +356,7 @@ public class Player {
 	public Array<String> getRoboticonAmountList() {
 		int ore = 0;
 		int energy = 0;
-		//added by andrew
+		//added by andrew - used to keep track of the number of food roboticons available to the player
 		int food = 0;
 		int uncustomised = 0;
 		Array<String> roboticonAmountList = new Array<String>();
@@ -370,7 +370,7 @@ public class Player {
 					case ENERGY:
 						energy += 1;
 						break;
-					//Added by andrew
+					//Added by andrew - added to increment the number of food roboticons
 					case FOOD:
 						food += 1;
 						break;
@@ -383,7 +383,7 @@ public class Player {
 
 		roboticonAmountList.add("Ore Specific x "    + ore);
 		roboticonAmountList.add("Energy Specific x " + energy);
-		//added by andrew
+		//added by andrew - used to add the number of food roboticons to the drop down roboticon selection menu
 		roboticonAmountList.add("Food Specific x " + food);
 		roboticonAmountList.add("Uncustomised x "    + uncustomised);
 		return roboticonAmountList;
@@ -399,7 +399,7 @@ public class Player {
 	public Array<String> getCustomisedRoboticonAmountList() {
 		int ore = 0;
 		int energy = 0;
-		//added by andrew
+		//added by andrew - used to keep track the number of food roboticons
 		int food = 0;
 		Array<String> roboticonAmountList = new Array<String>();
 
@@ -412,7 +412,7 @@ public class Player {
 					case ENERGY:
 						energy += 1;
 						break;
-					//added by andrew
+					//added by andrew - used to increment the number of food roboticons
 					case FOOD:
 						food += 1;
 						break;
@@ -424,7 +424,7 @@ public class Player {
 
 		roboticonAmountList.add("Ore Specific x "    + ore);
 		roboticonAmountList.add("Energy Specific x " + energy);
-		//added by andrew
+		//added by andrew - used to display the number of food roboticons in the roboticon drop down menu
 		roboticonAmountList.add("Food Specific x " + food);
 		return roboticonAmountList;
 	}
