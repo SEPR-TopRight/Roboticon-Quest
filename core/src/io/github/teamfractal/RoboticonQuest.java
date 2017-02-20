@@ -85,10 +85,10 @@ public class RoboticonQuest extends Game {
 
 		setScreen(mainMenuScreen);
 
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/squaredance.mp3"));
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/roundone.wav"));
 		gameMusic.play();
 		gameMusic.setLooping(true);
-		gameMusic.setVolume((float)0.3);
+		gameMusic.setVolume((float)0.4);
 	}
 
 	/**
