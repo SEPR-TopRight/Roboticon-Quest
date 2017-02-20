@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="Roboticon-Quest-core">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="Project and External Dependencies.libraryclasspath">
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.9.4/4b4b7962d1bc75af0438f5c81ec1010557bc9ee5/gdx-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.9.4/98a0d25c9f0637fecac6e4aacf7287aa635964f5/gdx-box2d-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.4/3d77ad5b4164fb32fc67e2446e35911bb0aaf0bd/box2dlights-1.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet/1.9.4/971a174538f313b9f975b8a6bbdf3aad04bb564d/gdx-bullet-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.9.4/8816dd669b8ca09e7d5e9575807e92c4318f708/gdx-freetype-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.ashley/ashley/1.7.0/a7c4083c0a42027a3c03ba7ccecef6cbe1c5f0a4/ashley-1.7.0.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-ai/1.8.0/ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5/gdx-ai-1.8.0.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.4/d182ca36785df4226ef63009a3d96462952665c3/gdx-controllers-1.9.4.jar"/>
+    </path>
+    <path id="Roboticon-Quest-core.classpath">
+        <pathelement location="bin"/>
+        <path refid="Project and External Dependencies.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Roboticon-Quest-core.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+</project>

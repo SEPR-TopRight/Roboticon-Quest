@@ -1,21 +1,27 @@
 package io.github.teamfractal;
-
+// Executable version can be found here: https://sepr-topright.github.io/SEPR/documentation/assessment3/game.zip
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import io.github.teamfractal.animation.AnimationAddResources;
 import io.github.teamfractal.animation.AnimationPhaseTimeout;
 import io.github.teamfractal.animation.AnimationShowPlayer;
+import io.github.teamfractal.animation.IAnimation;
 import io.github.teamfractal.animation.IAnimationFinish;
 import io.github.teamfractal.screens.*;
 import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Player;
-import io.github.teamfractal.util.GameMusic;
+import io.github.teamfractal.util.SoundEffects;
+import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.util.PlotManager;
 
 /**
@@ -24,6 +30,11 @@ import io.github.teamfractal.util.PlotManager;
  */
 public class RoboticonQuest extends Game {
 	static RoboticonQuest _instance;
+	
+	/**
+	 * Currently unused
+	 * @return The instance of this class
+	 */
 	public static RoboticonQuest getInstance() {
 		return _instance;
 	}
@@ -39,18 +50,27 @@ public class RoboticonQuest extends Game {
 	public ArrayList<Player> playerList;
 	public Market market;
 	private int landBoughtThisTurn;
-	private GameMusic gameMusic;
+	private Music gameMusic;
 
+	/**
+	 * Returns the index at which a given player is stored in the playerList
+	 * @param player
+	 * @return the index at which a given player is stored in the playerList
+	 */
 	public int getPlayerIndex (Player player) {
 		return playerList.indexOf(player);
 	}
 
 	public TiledMap tmx;
 	
+	/**
+	 * Constructor
+	 */
 	public RoboticonQuest(){
 		_instance = this;
 		reset();
 	}
+	
 	
 	@Override
 	public void create () {
@@ -65,21 +85,20 @@ public class RoboticonQuest extends Game {
 
 		setScreen(mainMenuScreen);
 
-		startMusic();
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/squaredance.mp3"));
+		gameMusic.play();
+		gameMusic.setLooping(true);
+		gameMusic.setVolume((float)0.3);
 	}
 
+	/**
+	 * 
+	 * @return The batch object used when rendering various aspects of the GUI
+	 */
 	public Batch getBatch() {
 		return batch;
 	}
 
-	/**
-	 * Initialises and starts the music playing
-	 * @author cb1423
-	 */
-	private void startMusic(){
-		gameMusic = new GameMusic();
-		gameMusic.play();
-	}
 	/**
 	 * Setup the default skin for GUI components.
 	 */
@@ -91,7 +110,7 @@ public class RoboticonQuest extends Game {
 	}
 
 	/**
-	 * Clean up
+	 * Clean up and destroy all UI components when the application is closed
 	 */
 	@Override
 	public void dispose () {
@@ -101,10 +120,17 @@ public class RoboticonQuest extends Game {
 		batch.dispose();
 	}
 	
+	/**
+	 * The phase number of the phase that the game is currently in (i.e. the roboticon placing phase)
+	 * @return The phase number of the phase that the game is currently in (i.e. the roboticon placing phase)
+	 */
 	public int getPhase(){
 		return this.phase;
 	}
 
+	/**
+	 * Rest the state of the game. Used when player's wish to start a new game.
+	 */
 	public void reset() {
 		this.currentPlayer = 0;
 		this.phase = 0;
@@ -119,6 +145,9 @@ public class RoboticonQuest extends Game {
 		plotManager = new PlotManager();
 	}
 
+	/**
+	 * Move to the next phase in the game
+	 */
 	public void nextPhase () {
 		int newPhaseState = phase + 1;
 		phase = newPhaseState;
@@ -129,8 +158,7 @@ public class RoboticonQuest extends Game {
 			// Phase 2: Purchase Roboticon
 			case 2:
 				
-				// Modified by Josh Neil - now passes market to roboticonMarket via constructor
-				RoboticonMarketScreen roboticonMarket = new RoboticonMarketScreen(this,market);
+				RoboticonMarketScreen roboticonMarket = new RoboticonMarketScreen(this);
 				roboticonMarket.addAnimation(new AnimationPhaseTimeout(getPlayer(), this, newPhaseState, 30));
 				setScreen(roboticonMarket);
 				break;
@@ -145,12 +173,12 @@ public class RoboticonQuest extends Game {
 						gameScreen.getActors().hideInstallRoboticon();
 					}
 				});
-				gameScreen.getActors().updateRoboticonSelection();
 				setScreen(gameScreen);
 				break;
 
 			// Phase 4: Purchase Resource
 			case 4:
+				gameScreen.hideNextStageButton(); // Added by Josh Neil
 				generateResources();
 				break;
 
@@ -160,8 +188,7 @@ public class RoboticonQuest extends Game {
 				// then we want the next player to have their turn.
 				// However if the current player is the last player then
 				// we want to go to the shared market phase (case 7)
-				System.out.println(currentPlayer);
-				System.out.println(playerList.size());
+				
 				if(currentPlayer < playerList.size()-1){ 
 					nextPlayer();
 				}
@@ -172,22 +199,26 @@ public class RoboticonQuest extends Game {
 				}
 				
 			
-			// Added by Josh Neil - ensures that we go back to phase 1
+			// Added by Josh Neil - ensures that we go back to phase 1 if not all plots have been acquired or the last
+				// player has not yet had their turn
+				// and the game over screen otherwise
 			case 6:
-				phase = newPhaseState =1;
-				// Deliberately falls through to the next case
-			
-			// Modified by Josh Neil so that we go to the game over screen once all plots have been acquired
-			// Phase 1: Enable of purchase LandPlot
-			case 1:
-				if(plotManager.allOwned()){ 
+				if(plotManager.allOwned() && currentPlayer == playerList.size() -1){
 					setScreen(new GameOverScreen(this));
+					break;
 				}
 				else{
-					setScreen(gameScreen);
-					landBoughtThisTurn = 0;
-					gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));
+					phase = newPhaseState =1;
+					// Deliberately falls through to the next case
 				}
+				
+			
+			// Phase 1: Enable of purchase LandPlot
+			case 1:
+				gameScreen.showNextStageButton(); // Added by Josh Neil - next stage button hidden during resource generation
+				setScreen(gameScreen);
+				landBoughtThisTurn = 0;
+				gameScreen.addAnimation(new AnimationShowPlayer(getPlayerInt() + 1));
 				break;
 			
 			
@@ -206,7 +237,22 @@ public class RoboticonQuest extends Game {
 
 		// Generate resources.
 		Player p = getPlayer();
-		p.generateResources();
+		
+		// Modified by Josh Neil - now accepts the values returned by Player.generateResources()
+		// and produces an animation that displays this information on screen (see Player.generateResources
+		// for a more in depth explanation)
+		HashMap<ResourceType,Integer> generatedResources = p.generateResources();
+		int energy = generatedResources.get(ResourceType.ENERGY);
+		int food = generatedResources.get(ResourceType.FOOD);
+		int ore = generatedResources.get(ResourceType.ORE);
+		IAnimation animation = new AnimationAddResources(p, energy, food, ore);
+		animation.setAnimationFinish(new IAnimationFinish() {
+			@Override
+			public void OnAnimationFinish() {
+					nextPhase();
+			}
+		});
+		gameScreen.addAnimation(animation);
 	}
 
 	/**
@@ -216,10 +262,21 @@ public class RoboticonQuest extends Game {
 		landBoughtThisTurn ++;
 	}
 
+	/**
+	 * Returns true if the current player is allowed to buy land and false otherwise
+	 * @return true if the current player is allowed to buy land and false otherwise
+	 */
 	public boolean canPurchaseLandThisTurn () {
 		return landBoughtThisTurn < 1;
 	}
 
+	/**
+	 * Returns a string that describes the current phase of the game
+	 * <p>
+	 * Used to instruct users as to what they should be doing
+	 * </p>
+	 * @return Returns a string that describes the current phase of the game
+	 */
 	public String getPhaseString () {
 		int phase = getPhase();
 
@@ -245,13 +302,25 @@ public class RoboticonQuest extends Game {
 
 	}
 
+	/**
+	 * Returns the current player (the one who's currently having their turn)
+	 * @return The current player (the one who's currently having their turn)
+	 */
 	public Player getPlayer(){
 		return this.playerList.get(this.currentPlayer);
 	}
 	
+	/**
+	 * Returns the playerIndex of the current player (the position at which they are stored in the playerList)
+	 * @return The playerIndex of the current player (the position at which they are stored in the playerList)
+	 */
 	public int getPlayerInt(){
 		return this.currentPlayer;
 	}
+	
+	/**
+	 * Used to allow the next player to have their turn
+	 */
 	public void nextPlayer(){
 		if (this.currentPlayer == playerList.size() - 1){
 			this.currentPlayer = 0; 
@@ -261,6 +330,9 @@ public class RoboticonQuest extends Game {
 		}
 	}
 
+	/**
+	 * @return The instance of PlotManager in use by the game
+	 */
 	public PlotManager getPlotManager() {
 		return plotManager;
 	}

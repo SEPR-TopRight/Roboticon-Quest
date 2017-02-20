@@ -6,8 +6,38 @@ buildscript {
         jcenter()
     }
     dependencies {
+    classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
     }
 }
+
+
+plugins {
+  id "com.github.johnrengelman.shadow" version "1.2.4"
+  id "java"
+}
+
+sourceSets.main.java.srcDirs = [ "/core/src/" ]
+sourceSets.test.java.srcDirs = [ "/core/test/" ]
+javadoc {
+  classpath += sourceSets.test.compileClasspath
+  source += sourceSets.test.java.srcDirs
+}
+
+apply plugin: 'eu.appsatori.fatjar'
+
+apply plugin: 'application'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'eu.appsatori.fatjar'
+
+mainClassName = 'com.topright.roboticon.desktop.DesktopLauncher'
+
+task createJavadocs (type: Javadoc){
+            source = sourceSets.test.java.srcDirs
+            options.linkSource true
+	    classpath += sourceSets.test.compileClasspath
+            
+            failOnError false
+      }
 
 allprojects {
     apply plugin: "eclipse"
@@ -15,10 +45,9 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "Roboticon-Quest"
+        appName = "RoboticonColony"
         gdxVersion = '1.9.4'
         roboVMVersion = '2.2.0'
-        box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
     }
@@ -31,6 +60,9 @@ allprojects {
     }
 }
 
+
+
+
 project(":desktop") {
     apply plugin: "java"
 
@@ -39,12 +71,11 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
     }
 }
 
@@ -54,37 +85,49 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+
+	testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+	testCompile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+	testCompile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+	testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testCompile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+	testCompile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+	testCompile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+	testCompile "org.mockito:mockito-core:1.+"
+	testCompile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+	testCompile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+	testCompile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+
+	testCompile 'org.jmockit:jmockit:1.30'
+	testCompile "junit:junit:4.11" 
     }
 }
 
-project(":test") {
-    apply plugin: "java"
 
 
-    dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "org.mockito:mockito-core:1.+"
-        testCompile 'junit:junit:4.12'
-    }
-}
 
 tasks.eclipse.doLast {
     delete ".project"
 }
+
+// Configure the shadow jar task
+shadowJar {
+    mergeServiceFiles()
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+}
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+

@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.screens.AbstractAnimationScreen;
 
+/**
+ * Adds an animation that moves onto the screen then off again and displays 
+ * the resources that have been added to or removed from the given players inventory
+ */
 public class AnimationAddResources implements IAnimation {
 	private final Player player;
 	private final int energy;

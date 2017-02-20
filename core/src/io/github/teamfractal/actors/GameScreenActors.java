@@ -4,14 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -24,8 +19,12 @@ import io.github.teamfractal.screens.AbstractAnimationScreen;
 import io.github.teamfractal.screens.GameScreen;
 import io.github.teamfractal.util.MessagePopUp;
 import io.github.teamfractal.util.RandomEvents;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.TileConverter;
 
+/**
+ * Creates all of the widgets that are displayed on the main game screen
+ */
 public class GameScreenActors {
 	private final Stage stage;
 	private RoboticonQuest game;
@@ -41,8 +40,11 @@ public class GameScreenActors {
 	private TextButton nextButton;
 	private boolean dropDownActive;
 	private boolean listUpdated;
-	private Texture backgroundImage;
+	private Image backgroundImage;
 	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
+
 	/**
 	 * Initialise the main game screen components.
 	 * @param game         The game manager {@link RoboticonQuest}
@@ -55,18 +57,16 @@ public class GameScreenActors {
 
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Texture(Gdx.files.internal("background/space-stars1080.png"));
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/space-stars.jpeg")));
 
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * returns the background image
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		batch.draw(backgroundImage, 0, 0);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 
 	/**
@@ -142,6 +142,7 @@ public class GameScreenActors {
 		buyLandPlotBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
 				event.stop();
 				hideBuyLand();
 				if (buyLandPlotBtn.isDisabled()) {
@@ -157,15 +158,18 @@ public class GameScreenActors {
 				if (player.purchaseLandPlot(selectedPlot)) {
 					//Added a random event where the player finds a chest containing money - Christian Beddows
 					if (RandomEvents.tileHasChest()){
-						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(game);
+						SoundEffects.chime();
+						int playerTreasure = RandomEvents.amountOfMoneyInTreasureChest(player);
 						stage.addActor(new MessagePopUp("You found a treasure chest!","On your new tile you "
 								+ "find a buried treasure chest containing " + Integer.toString(playerTreasure) + " money!"));
 					}
 					//Added a random event where you disturb a flock of geese on a plot - Ben
 					if (RandomEvents.geeseAttack()){
-						int food = RandomEvents.geese(game);
+						SoundEffects.anxiety();
+						ResourceType resource = RandomEvents.getResourceStolenByGeese(player);
+						int quantityLost = RandomEvents.geeseStealResources(player,resource);
 						stage.addActor(new MessagePopUp("Disturbed a flock of Geese!","On your new tile you "
-								+ "discover a flock of geese they attack!, you lost " + Integer.toString(food) + " food!"));
+								+ "discover a flock of geese they attack!, you lost " + Integer.toString(quantityLost) + " "+resource));
 					}
 					TiledMapTileLayer.Cell playerTile = selectedPlot.getPlayerTile();
 					playerTile.setTile(screen.getPlayerTile(player));
@@ -173,6 +177,7 @@ public class GameScreenActors {
 				}
 				//Added a popup if you dont have enough money to buy a plot - Ben
 				else{
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to buy this plot."));
 				}
 			}
@@ -181,6 +186,7 @@ public class GameScreenActors {
 		nextButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
 				event.stop();
 				if (nextButton.isDisabled()) {
 					return ;
@@ -202,6 +208,7 @@ public class GameScreenActors {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
 				event.stop();
 				if (installRoboticonBtn.isDisabled()) {
 					return ;
@@ -221,7 +228,7 @@ public class GameScreenActors {
 							case 1:
 								type = ResourceType.ENERGY;
 								break;
-							//added by andrew
+							//added by andrew - added so that food appears in the drop down menu in roboticon placement
 							case 2:
 								type = ResourceType.FOOD;
 								break;
@@ -243,6 +250,7 @@ public class GameScreenActors {
 							///// else branch followed by textUpdate()
 							if(RandomEvents.roboticonIsFaulty()){
 								// Roboticon was faulty and has broken (cannot be placed)
+								SoundEffects.pulse();
 								game.getPlayer().removeRoboticon(roboticon);
 								stage.addActor(new MessagePopUp("That roboticon was faulty","That roboticon was faulty and exploded!"));
 							}
@@ -267,6 +275,8 @@ public class GameScreenActors {
 		installRoboticonBtnCancel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+
+				SoundEffects.click();
 				event.stop();
 				dropDownActive = false;
 				hideInstallRoboticon();
@@ -282,6 +292,7 @@ public class GameScreenActors {
 	 * @param y    Current mouse y position
 	 */
 	public void tileClicked(LandPlot plot, float x, float y) {
+		SoundEffects.click();
 		Player player = game.getPlayer();
 
 		switch (game.getPhase()) {
@@ -321,7 +332,7 @@ public class GameScreenActors {
 	 */
 	private void updateRoboticonList() {
 		
-		///// Changed getRoboticonAmountList() to getCustomisedRoboticonAmountList()
+		///// Josh Neil changed getRoboticonAmountList() to getCustomisedRoboticonAmountList()
 		///// Stop player's placing uncustomised roboticons
 		installRoboticonSelect.setItems(game.getPlayer().getCustomisedRoboticonAmountList());
 	}
@@ -363,7 +374,13 @@ public class GameScreenActors {
 
 		playerStats.setPosition(10, topBarY);
 		nextButton.setPosition(width - nextButton.getWidth() - 10, 10);
-	}
+
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
+		backgroundImage.toBack();
+		}
+
 
 	/**
 	 * Show plot information about current selected stats.
@@ -381,9 +398,6 @@ public class GameScreenActors {
 		plotStats.setVisible(true);
 	}
 
-	public void updateRoboticonSelection() {
-		// TODO: Implement this method
-	}
 
 	/**
 	 * Hide "Buy Land" button and plot information.
@@ -406,5 +420,17 @@ public class GameScreenActors {
 	 */
 	public boolean installRoboticonVisible() {
 		return installRoboticonTable.isVisible();
+	}
+
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	public void hideNextStageButton() {
+		nextButton.setVisible(false);
+	}
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	// (and then added to the screen again afterwards)
+	public void showNextStageButton(){
+		nextButton.setVisible(true);
 	}
 }

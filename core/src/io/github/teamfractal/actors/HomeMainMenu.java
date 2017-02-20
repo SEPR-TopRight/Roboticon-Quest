@@ -1,7 +1,6 @@
 package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,17 +10,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
 import io.github.teamfractal.RoboticonQuest;
-import io.github.teamfractal.util.GameMusic;
+import io.github.teamfractal.util.SoundEffects;
 
-
+/**
+ * Creates all of the UI widgets that are displayed on the main menu screen
+ *
+ */
 public class HomeMainMenu extends Table {
 	private RoboticonQuest game;
 	private TextButton btnNewGame;
 	private TextButton btnExit;
-	private Texture backgroundImage;
+	private Image backgroundImage;
 	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
 
 	private static Texture titleTexture = new Texture(Gdx.files.internal("roboticon_images/Roboticon_Quest_Title"));
 
@@ -34,7 +37,7 @@ public class HomeMainMenu extends Table {
 
 		//Added by Christian Beddows
 		batch = (SpriteBatch) game.getBatch();
-		backgroundImage = new Texture(Gdx.files.internal("background/corridor.png"));
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/corridor.jpg")));
 
 		// Create UI Components
 		final Image imgTitle = new Image();
@@ -56,16 +59,27 @@ public class HomeMainMenu extends Table {
 		add(btnNewGame).pad(5);
 		row();
 		add(btnExit).pad(5);
+
 	}
 
 	/**
-	 * Method to draw the background to the resource market
-	 * by Christian Beddows
+	 * Returns the backgrounImage
+	 * @return Image
 	 */
-	public void drawBackground() {
-		batch.begin();
-		batch.draw(backgroundImage, 0, 0);
-		batch.end();
+	public Image getBackgroundImage() {
+		return backgroundImage;
+	}
+
+	/**
+	 * Scales the background to fit the screen
+	 * @author cb1423
+	 * @param width
+	 * @param height
+	 */
+	public void resizeScreen(float width, float height) {
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 	}
 
 	/**
@@ -75,6 +89,7 @@ public class HomeMainMenu extends Table {
 		btnNewGame.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
+				SoundEffects.click();
 				game.setScreen(game.gameScreen);
 				game.gameScreen.newGame();
 			}
@@ -83,6 +98,7 @@ public class HomeMainMenu extends Table {
 		btnExit.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
+				SoundEffects.click();
 				Gdx.app.exit();
 			}
 		});

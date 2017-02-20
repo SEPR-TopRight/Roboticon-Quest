@@ -1,9 +1,16 @@
 package io.github.teamfractal.entity;
 
+import java.util.Random;
+
+import io.github.teamfractal.entity.enums.GamblingResult;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.exception.InvalidResourceTypeException;
 import io.github.teamfractal.exception.NotCommonResourceException;
 
+/**
+ * Players can use the market to buy and sell resources, roboticons and roboticon customisation
+ *
+ */
 public class Market {
 	/**
 	 * Initialise the market
@@ -201,7 +208,7 @@ public class Market {
 	}
 
 	/**
-	 * Get the single price for a resource type.
+	 * Get the price that the market will pay a player for a single unit of a given resource.
 	 * @param resource   The {@link ResourceType}.
 	 * @return           The buy in price.
 	 */
@@ -210,7 +217,7 @@ public class Market {
 	}
 
 	/**
-	 * Get the single price for a resource type.
+	 * Get the price that a player must pay the market for a single unit of a given resource.
 	 * @param resource   The {@link ResourceType}.
 	 * @return           The sell price.
 	 */
@@ -287,6 +294,32 @@ public class Market {
 		}
 		return false;
 		
+	}
+	
+	// Added by Josh to implement the gambling feature
+	/**
+	 * There is a 50/50 chance of winning. If the player wins the amount of money specified by the bet
+	 * is added to their inventory, if they lose then the amount of money specified by the bet is removed from their inventory.
+	 * Players cannot place a bet unless they have at least as much money as specified by the bet
+	 * @param player the gambling Player
+	 * @param bet
+	 * @return GamblingResult.NOTENOUGHMONEY if the player does not have enough money and GamblingResult.WON or GamblingResult.LOST otherwise
+	 */
+	public GamblingResult playerGamble(Player player, int bet){
+		if(bet<0){
+			throw new IllegalArgumentException("Bet must be non-negative!");
+		}
+		if(player.getMoney() < bet){
+			return GamblingResult.NOTENOUGHMONEY;
+		}
+		else if((new Random()).nextBoolean()){
+			player.setMoney(player.getMoney() + bet);
+			return GamblingResult.WON;
+		}
+		else{
+			player.setMoney(player.getMoney() - bet);
+			return GamblingResult.LOST;
+		}
 	}
 }
 
