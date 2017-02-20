@@ -43,7 +43,7 @@ public class RoboticonMarketActors extends Table {
 	private static final Texture no_cust_texture;
 	private static final Texture energy_texture;
 	private static final Texture ore_texture;
-	//added by andrew
+	//added by andrew - used to store the market image for a food roboticon
 	private static final Texture food_texture;
 	private static final Texture no_robotic_texture;
 
@@ -60,7 +60,7 @@ public class RoboticonMarketActors extends Table {
 		energy_texture = new Texture(Gdx.files.internal("roboticon_images/robot_energy.png"));
 		ore_texture = new Texture(Gdx.files.internal("roboticon_images/robot_ore.png"));
 		no_robotic_texture = new Texture(Gdx.files.internal("roboticon_images/no_roboticons.png"));
-		//added by andrew
+		//added by andrew - assigning an image to the market image for a food roboticon
 		food_texture = new Texture(Gdx.files.internal("roboticon_images/robot_food.png"));
 	}
 
@@ -189,7 +189,7 @@ public class RoboticonMarketActors extends Table {
 
 		// Drop down menu to select how to customise the selected roboticion
 		final SelectBox<String> customisationDropDown = new SelectBox<String>(game.skin);
-		//modified by andrew
+		//modified by andrew - added food as a possible customisation
 		String[] customisations = {"Energy", "Ore", "Food"};
 		customisationDropDown.setItems(customisations);
 
@@ -206,7 +206,7 @@ public class RoboticonMarketActors extends Table {
 				HashMap<String, ResourceType> converter = new HashMap<String, ResourceType>();
 				converter.put("Energy", ResourceType.ENERGY);
 				converter.put("Ore", ResourceType.ORE);
-				//added by andrew
+				//added by andrew - ensure the option for food appears during this creen
 				converter.put("Food", ResourceType.FOOD);
 				Roboticon roboticonToCustomise = roboticons.get(currentlySelectedRoboticonPos);
 
@@ -358,7 +358,7 @@ public class RoboticonMarketActors extends Table {
 				case ENERGY:
 					roboticonTexture = energy_texture;
 					break;
-				//added by andrew
+				//added by andrew - change roboticon texture to the food roboticon texture
 				case FOOD:
 					roboticonTexture = food_texture;
 					break;
