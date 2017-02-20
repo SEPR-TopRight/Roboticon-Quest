@@ -228,7 +228,7 @@ public class GameScreenActors {
 							case 1:
 								type = ResourceType.ENERGY;
 								break;
-							//added by andrew
+							//added by andrew - added so that food appears in the drop down menu in roboticon placement
 							case 2:
 								type = ResourceType.FOOD;
 								break;
