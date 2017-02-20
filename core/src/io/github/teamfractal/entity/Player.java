@@ -11,12 +11,19 @@ import io.github.teamfractal.exception.NotCommonResourceException;
 import io.github.teamfractal.exception.NotEnoughResourceException;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Random;
 
 import static io.github.teamfractal.entity.enums.ResourceType.ENERGY;
 import static io.github.teamfractal.entity.enums.ResourceType.FOOD;
 import static io.github.teamfractal.entity.enums.ResourceType.ORE;
 
+/**
+ * Holds all data relating to a single player and implements the logic required
+ * for players to buy and sell to/from the market and other players, aquire land and 
+ * make that land produce resources
+ */
 public class Player {
 	//<editor-fold desc="Resource getter and setter">
 	private int money = 100;
@@ -46,7 +53,7 @@ public class Player {
 	 */
 	public synchronized void setMoney(int money) throws IllegalArgumentException {
 		if (money < 0) {
-			throw new IllegalArgumentException("Error: Money can't be negative.");
+			throw new IllegalArgumentException("Error: Money can't be negative."); //My bank account would disagree
 		}
 
 		this.money = money;
@@ -221,6 +228,32 @@ public class Player {
 		setResource(resource, getResource(resource) + amount);
 		return PurchaseStatus.Success;
 	}
+	
+	
+	// Added by Josh Neil so that players can sell to other players
+	/**
+	 * Allows players to sell a given quantity of a given resource to another player for a given price
+	 * @param buyingPlayer
+	 * @param quantity
+	 * @param resource
+	 * @param pricePerUnit
+	 * @return
+	 */
+	public PurchaseStatus sellResourceToPlayer(Player buyingPlayer,int quantity, ResourceType resource, int pricePerUnit) {
+		int totalCost = quantity * pricePerUnit;
+		if(getResource(resource) < quantity){
+			return PurchaseStatus.FailPlayerNotEnoughResource;
+		}
+		else if(buyingPlayer.getMoney() < totalCost){
+			return PurchaseStatus.FailPlayerNotEnoughMoney;
+		}
+
+		setMoney(totalCost + getMoney());
+		setResource(resource, getResource(resource) - quantity);
+		buyingPlayer.setMoney(buyingPlayer.getMoney() - totalCost);
+		buyingPlayer.setResource(resource, buyingPlayer.getResource(resource) + quantity);
+		return PurchaseStatus.Success;
+	}
 
 	/**
 	 * Action for player to sell resources to the market.
@@ -265,6 +298,9 @@ public class Player {
 		game.landPurchasedThisTurn();
 		return true;
 	}
+	
+	// Marked as deprecated by Josh Neil as it is no longer in use (generate resources is used instead)
+	@Deprecated
 	/**
 	 * Get a landplot to produce resources
 	 */
@@ -306,10 +342,11 @@ public class Player {
 	 */
 	public void removeLandPlot(LandPlot landPlot) {
 		if (landPlot != null && landList.contains(landPlot) && landPlot.getOwner() == this) {
-			landList.add(landPlot);
+			landList.remove(landPlot);
 		}
 	}
 
+	// No longer used but left here in case it is needed for future modifications/extensions!
 	/**
 	 * Get a string list of roboticons available for the player.
 	 * Mainly for the dropdown selection.
@@ -319,7 +356,7 @@ public class Player {
 	public Array<String> getRoboticonAmountList() {
 		int ore = 0;
 		int energy = 0;
-		//added by andrew
+		//added by andrew - used to keep track of the number of food roboticons available to the player
 		int food = 0;
 		int uncustomised = 0;
 		Array<String> roboticonAmountList = new Array<String>();
@@ -333,7 +370,7 @@ public class Player {
 					case ENERGY:
 						energy += 1;
 						break;
-					//Added by andrew
+					//Added by andrew - added to increment the number of food roboticons
 					case FOOD:
 						food += 1;
 						break;
@@ -346,7 +383,7 @@ public class Player {
 
 		roboticonAmountList.add("Ore Specific x "    + ore);
 		roboticonAmountList.add("Energy Specific x " + energy);
-		//added by andrew
+		//added by andrew - used to add the number of food roboticons to the drop down roboticon selection menu
 		roboticonAmountList.add("Food Specific x " + food);
 		roboticonAmountList.add("Uncustomised x "    + uncustomised);
 		return roboticonAmountList;
@@ -362,7 +399,7 @@ public class Player {
 	public Array<String> getCustomisedRoboticonAmountList() {
 		int ore = 0;
 		int energy = 0;
-		//added by andrew
+		//added by andrew - used to keep track the number of food roboticons
 		int food = 0;
 		Array<String> roboticonAmountList = new Array<String>();
 
@@ -375,7 +412,7 @@ public class Player {
 					case ENERGY:
 						energy += 1;
 						break;
-					//added by andrew
+					//added by andrew - used to increment the number of food roboticons
 					case FOOD:
 						food += 1;
 						break;
@@ -387,7 +424,7 @@ public class Player {
 
 		roboticonAmountList.add("Ore Specific x "    + ore);
 		roboticonAmountList.add("Energy Specific x " + energy);
-		//added by andrew
+		//added by andrew - used to display the number of food roboticons in the roboticon drop down menu
 		roboticonAmountList.add("Food Specific x " + food);
 		return roboticonAmountList;
 	}
@@ -395,10 +432,16 @@ public class Player {
 		return this.roboticonList;
 	}
 
+	// Modified by Josh Neil to return a HashMap that maps ResourceType onto the number
+	// of that type of resource that was produced. This is so that RoboticonQuest can use this
+	// information to produce an animation that displays the resources generated. This
+	// method use to produce that animation but that caused problems with testing (automated
+	// testing of LibGDX dependent classes is tricky).
 	/**
 	 * Generate resources produced from each LandPlot
+	 * @return A HashMap that maps ResourceType onto the quantity of that resource that was generated
 	 */
-	public void generateResources() {
+	public HashMap generateResources() {
 		int energy = 0;
 		int food = 0;
 		int ore = 0;
@@ -413,16 +456,12 @@ public class Player {
 		setFood(getFood() + food);
 		setOre(getOre() + ore);
 
-		IAnimation animation = new AnimationAddResources(this, energy, food, ore);
-		animation.setAnimationFinish(new IAnimationFinish() {
-			@Override
-			public void OnAnimationFinish() {
-				if (game.getPlayer() == Player.this){
-					game.nextPhase();
-				}
-			}
-		});
-		game.gameScreen.addAnimation(animation);
+		// Added by Josh Neil
+		HashMap<ResourceType, Integer> returnValues = new HashMap<ResourceType, Integer>();
+		returnValues.put(ResourceType.FOOD, food);
+		returnValues.put(ResourceType.ENERGY, energy);
+		returnValues.put(ResourceType.ORE, ore);
+		return returnValues;
 	}
 	
 	/////// Added by Josh Neil to support the random event where a roboticon is faulty and breaks - Josh Neil
@@ -442,7 +481,9 @@ public class Player {
 	 * @return The player's score
 	 */
 	public int getScore(){
-		int score = getMoney() + (getResource(ENERGY)*18) + (getResource(ORE)*9) + (getResource(FOOD)*27);
+		int score = getMoney() + (getResource(ENERGY)*game.market.getSellPrice(ENERGY)) + 
+				(getResource(ORE)*game.market.getSellPrice(ORE)) + 
+				(getResource(FOOD)*game.market.getSellPrice(FOOD));
 		return score;
 	}
 }

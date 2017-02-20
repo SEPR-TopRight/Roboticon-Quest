@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="Roboticon-Quest-desktop">
+    <property environment="env"/>
+    <property name="workspace_loc:Roboticon-Quest-core/assets" value="../core/assets"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="Project and External Dependencies.libraryclasspath">
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl/1.9.4/4c6c108a9dcbc07096de8594b93f9cab33856fe2/gdx-backend-lwjgl-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-platform/1.9.4/8e93afecc287ab152179983fc1b5f65db4c2fa4c/gdx-platform-1.9.4-natives-desktop.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d-platform/1.9.4/905a9ed3017cd3917b7fbada5ece58c40fddcbca/gdx-box2d-platform-1.9.4-natives-desktop.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet-platform/1.9.4/13190302e8721452ffb8ae242dba20f6195e8175/gdx-bullet-platform-1.9.4-natives-desktop.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype-platform/1.9.4/4bced98798c82ba1cb947343bdd6297243ea09e3/gdx-freetype-platform-1.9.4-natives-desktop.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-tools/1.9.4/4c15cd85a5077bc7d13914be7cbd8dcce2d31725/gdx-tools-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers-desktop/1.9.4/327d033c54df7fcfedb4576b47cd2546a3634ba/gdx-controllers-desktop-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers-platform/1.9.4/5642c2faa67bc94d6c42718d50884f562249cfa7/gdx-controllers-platform-1.9.4-natives-desktop.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.9.4/4b4b7962d1bc75af0438f5c81ec1010557bc9ee5/gdx-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.9.4/98a0d25c9f0637fecac6e4aacf7287aa635964f5/gdx-box2d-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.4/3d77ad5b4164fb32fc67e2446e35911bb0aaf0bd/box2dlights-1.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet/1.9.4/971a174538f313b9f975b8a6bbdf3aad04bb564d/gdx-bullet-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.9.4/8816dd669b8ca09e7d5e9575807e92c4318f708/gdx-freetype-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.ashley/ashley/1.7.0/a7c4083c0a42027a3c03ba7ccecef6cbe1c5f0a4/ashley-1.7.0.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-ai/1.8.0/ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5/gdx-ai-1.8.0.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.4/d182ca36785df4226ef63009a3d96462952665c3/gdx-controllers-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl/2.9.2/a9d80fe5935c7a9149f6584d9777cfd471f65489/lwjgl-2.9.2.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl_util/2.9.2/4b9e37300a87799856e0bd15ed81663cdb6b0947/lwjgl_util-2.9.2.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.jlayer/jlayer/1.0.1-gdx/7cca83cec5c1b2f011362f4d85aabd71a73b049d/jlayer-1.0.1-gdx.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/org.jcraft/jorbis/0.0.17/8872d22b293e8f5d7d56ff92be966e6dc28ebdc6/jorbis-0.0.17.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-headless/1.9.4/e985d7be223b56c9e03ad79bc573d038319cc62b/gdx-backend-headless-1.9.4.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl-platform/2.9.2/510c7d317f5e9e700b9cfaac5fd38bdebf0702e0/lwjgl-platform-2.9.2-natives-windows.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl-platform/2.9.2/d276cdf61fe2b516c7b7f4aa1b8dea91dbdc8d56/lwjgl-platform-2.9.2-natives-linux.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl-platform/2.9.2/d55b46b40b40249d627a83a7f7f22649709d70c3/lwjgl-platform-2.9.2-natives-osx.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput/2.0.5/39c7796b469a600f72380316f6b1f11db6c2c7c4/jinput-2.0.5.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/net.java.jutils/jutils/1.0.0/e12fe1fda814bd348c1579329c86943d2cd3c6a6/jutils-1.0.0.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/7ff832a6eb9ab6a767f1ade2b548092d0fa64795/jinput-platform-2.0.5-natives-linux.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/385ee093e01f587f30ee1c8a2ee7d408fd732e16/jinput-platform-2.0.5-natives-windows.jar"/>
+        <pathelement location="../../../.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/53f9c919f34d2ca9de8c51fc4e1e8282029a9232/jinput-platform-2.0.5-natives-osx.jar"/>
+        <pathelement location="../../../../../Roboticon-Quest-core"/>
+    </path>
+    <path id="Roboticon-Quest-desktop.classpath">
+        <pathelement location="bin"/>
+        <path refid="Project and External Dependencies.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Roboticon-Quest-desktop.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="DesktopLauncher (1)">
+        <java classname="io.github.teamfractal.desktop.DesktopLauncher" dir="${workspace_loc:Roboticon-Quest-core/assets}" failonerror="true" fork="yes">
+            <classpath refid="Roboticon-Quest-desktop.classpath"/>
+        </java>
+    </target>
+</project>

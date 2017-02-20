@@ -5,6 +5,6 @@ public enum RoboticonType {
 	NO_CUST,
 	ORE,
 	ENERGY,
-	//Added by Andrew
+	//Added by Andrew - added to allow the implentation of the food roboticon
 	FOOD
 }

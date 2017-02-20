@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricStaggeredTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -18,17 +20,25 @@ import io.github.teamfractal.actors.GameScreenActors;
 import io.github.teamfractal.entity.LandPlot;
 import io.github.teamfractal.entity.Player;
 import io.github.teamfractal.entity.enums.ResourceType;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.TileConverter;
 
+/**
+ * The main game screen that allows players to interact with all the plots
+ *
+ */
 public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private final RoboticonQuest game;
 	private final OrthographicCamera camera;
 	private final Stage stage;
+	private final Stage bgstage;
 	private IsometricStaggeredTiledMapRenderer renderer;
 
 	private TiledMap tmx;
 	private TiledMapTileLayer mapLayer;
 	private TiledMapTileLayer playerOverlay;
+
+	private SoundEffects gameAudio;
 
 	private float oldX;
 	private float oldY;
@@ -42,7 +52,6 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	private float maxDragY;
 	private TiledMapTileSets tiles;
 
-
 	public LandPlot getSelectedPlot() {
 		return selectedPlot;
 	}
@@ -52,6 +61,8 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	 * @param game  The game object
 	 */
 	public GameScreen(final RoboticonQuest game) {
+		
+		
 		oldW = Gdx.graphics.getWidth();
 		oldH = Gdx.graphics.getHeight();
 
@@ -59,12 +70,15 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		camera.setToOrtho(false, oldW, oldH);
 		camera.update();
 
+		gameAudio = new SoundEffects();
 
 		this.game = game;
 
 		// TODO: Add some HUD gui stuff (buttons, mini-map etc...)
 		this.stage = new Stage(new ScreenViewport());
+		this.bgstage = new Stage(stage.getViewport());
 		this.actors = new GameScreenActors(game, this);
+		bgstage.addActor(actors.getBackgroundImage());
 		actors.initialiseButtons();
 		// actors.textUpdate();
 		
@@ -131,6 +145,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		stage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				gameAudio.click();
 				if (event.isStopped()) {
 					return ;
 				}
@@ -195,7 +210,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	/**
 	 * gets the players tile to put over a tile they own
 	 * @param player player to buy plot
-	 * @return tile that has the coloure doutline acossiated with the player
+	 * @return tile that has the coloured outline associated with the player
 	 */
 	public TiledMapTile getPlayerTile(Player player) {
 		return tiles.getTile(68 + game.getPlayerIndex(player));
@@ -224,10 +239,11 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		// Setup the game board.
 		if (tmx != null) tmx.dispose();
 		if (renderer != null) renderer.dispose();
-		this.tmx = new TmxMapLoader().load("tiles/city_simplified.tmx");
+		this.tmx = new TmxMapLoader().load("tiles/city.tmx");
 		tiles = tmx.getTileSets();
 		TileConverter.setup(tiles, game);
 		renderer = new IsometricStaggeredTiledMapRenderer(tmx);
+		renderer.getViewBounds().setCenter(getScreenSize().Width, getScreenSize().Height);
 		game.reset();
 
 		mapLayer = (TiledMapTileLayer)tmx.getLayers().get("MapData");
@@ -243,12 +259,29 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
 	}
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	// (and then added to the screen again afterwards)
+	public void hideNextStageButton(){
+		actors.hideNextStageButton();
+	}
+	
+	// Added by Josh Neil so that the next stage button can be removed during the resource generation stage
+	// (and then added to the screen again afterwards)
+	public void showNextStageButton(){
+		actors.showNextStageButton();
+	}
 
+
+	//Modified by Christian Beddows to add a background image
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
+
+		bgstage.act(delta);
+		bgstage.draw();
 
 		renderer.setView(camera);
 		renderer.render();
@@ -270,6 +303,7 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		game.getBatch().setProjectionMatrix(stage.getCamera().combined);
 		camera.setToOrtho(false, width, height);
 		actors.resizeScreen(width, height);
+
 		oldW = width;
 		oldH = height;
 	}
@@ -319,10 +353,18 @@ public class GameScreen extends AbstractAnimationScreen implements Screen  {
 		return s;
 	}
 
+	/**
+	 * 
+	 * @return the tmx map of plot tiles used in the game
+	 */
 	public TiledMap getTmx(){
 		return this.tmx;
 	}
 	
+	/**
+	 * 
+	 * @return the widgets (actors) displayed on the screen
+	 */
 	public GameScreenActors getActors(){
 		return this.actors;
 	}

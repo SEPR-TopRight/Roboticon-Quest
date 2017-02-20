@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="staggered" renderorder="right-down" width="7" height="12" tilewidth="100" tileheight="50" staggeraxis="y" staggerindex="odd" nextobjectid="1">
- <tileset firstgid="1" name="york" tilewidth="2208" tileheight="1474" tilecount="54" columns="0">
+ <tileset firstgid="1" name="york" tilewidth="100" tileheight="80" tilecount="53" columns="0">
   <tile id="0" probability="2">
    <image width="100" height="66" source="city/raw/dirtHigh.png"/>
   </tile>
@@ -160,11 +160,8 @@
   <tile id="65">
    <image width="100" height="65" source="city/raw/sport village placeholder.png"/>
   </tile>
-  <tile id="66">
-   <image width="2208" height="1474" source="../background/space-stars.png"/>
-  </tile>
  </tileset>
- <tileset firstgid="68" name="player1 tiles" tilewidth="104" tileheight="69" tilecount="21" columns="0">
+ <tileset firstgid="67" name="player1 tiles" tilewidth="104" tileheight="69" tilecount="17" columns="0">
   <tile id="0">
    <image width="100" height="65" source="city/Player1/empty.png"/>
   </tile>
@@ -216,20 +213,8 @@
   <tile id="16">
    <image width="100" height="65" source="city/Player1/player4Uncustomised.png"/>
   </tile>
-  <tile id="17">
-   <image width="104" height="69" source="city/Player1/player1food.png"/>
-  </tile>
-  <tile id="18">
-   <image width="100" height="65" source="city/Player1/player2food.png"/>
-  </tile>
-  <tile id="19">
-   <image width="100" height="65" source="city/Player1/player3food.png"/>
-  </tile>
-  <tile id="20">
-   <image width="100" height="65" source="city/Player1/player4food.png"/>
-  </tile>
  </tileset>
- <tileset firstgid="89" name="roboticon" tilewidth="104" tileheight="69" tilecount="5" columns="0">
+ <tileset firstgid="100" name="roboticon" tilewidth="104" tileheight="69" tilecount="3" columns="0">
   <tile id="0">
    <image width="100" height="65" source="city/roboticon/blank.png"/>
   </tile>
@@ -246,23 +231,7 @@
    <image width="100" height="65" source="city/roboticon/food.png"/>
   </tile>
  </tileset>
- <layer name="back" width="7" height="12" offsetx="-500" offsety="500">
-  <data encoding="csv">
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,
-67,0,0,0,0,0,0
-</data>
- </layer>
- <layer name="MapData" width="7" height="12" offsetx="106" offsety="0">
+ <layer name="MapData" width="7" height="12">
   <data encoding="csv">
 2,2,7,61,61,61,61,
 2,6,5,61,61,2,61,
@@ -278,36 +247,36 @@
 66,2,2,52,2,2,2
 </data>
  </layer>
- <layer name="PlayerOverlay" width="7" height="12" offsetx="100" offsety="0">
+ <layer name="PlayerOverlay" width="7" height="12">
   <data encoding="csv">
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68,
-68,68,68,68,68,68,68
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67,
+67,67,67,67,67,67,67
 </data>
  </layer>
- <layer name="RoboticonOverlay" width="7" height="12" offsetx="100" offsety="0">
+ <layer name="RoboticonOverlay" width="7" height="12">
   <data encoding="csv">
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89,
-89,89,89,89,89,89,89
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100,
+100,100,100,100,100,100,100
 </data>
  </layer>
 </map>

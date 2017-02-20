@@ -1,24 +1,33 @@
 package io.github.teamfractal.actors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import io.github.teamfractal.RoboticonQuest;
 import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Player;
+import io.github.teamfractal.entity.enums.GamblingResult;
+import io.github.teamfractal.entity.enums.PurchaseStatus;
 import io.github.teamfractal.entity.enums.ResourceType;
-import io.github.teamfractal.exception.InvalidResourceTypeException;
 import io.github.teamfractal.screens.ResourceMarketScreen;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.MessagePopUp;
+import io.github.teamfractal.util.StringUtil;
 
+
+// Heavily modified by Josh Neil as before it only allowed the current player to buy and sell resources
+/**
+ * Creates all of the widgets that the players can use to buy and sell resources to/from each other and the market.
+ * A highly modified version of the original class provided by Team Fractal.
+ * @author jcn509
+ */
 public class ResourceMarketActors extends Table {
 
 	private RoboticonQuest game;
@@ -29,16 +38,78 @@ public class ResourceMarketActors extends Table {
 	private SelectBox<String> playerToPlayerResourceDropDown;
 	private SelectBox<String> playerToPlayerSellerDropDown;
 	private SelectBox<String> playerToPlayerBuyerDropDown;
-	private AdjustableActor playerToPlayerPriceDropDown;
-	private AdjustableActor playerToPlayerQuantityDropDown;
+	private AdjustableActor playerToPlayerPriceAdjustableActor;
+	private AdjustableActor playerToPlayerQuantityAdjustableActor;
 	
 	private SelectBox<String> marketResourceDropDown;
 	private SelectBox<String> marketPlayerDropDown;
-	private AdjustableActor marketQuantityDropDown;
+	private AdjustableActor marketQuantityAdjustableActor;
 	private SelectBox<String> marketBuyOrSellDropDown;
 	private Label[] playerStatsLabels;
 	private final Stage stage;
+	
+	private SelectBox<String> gamblingPlayerDropDown;
+	private AdjustableActor gamblingAdjustableActor;
+	
+	private Table marketTransactionWidget, playerToPlayerTransactionWidget, gamblingWidget;
+
+	private TextButton playerToPlayerTransactionButton, marketTransactionButton, gambleButton;
+
+	private Image backgroundImage;
+	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
+	
+	/**
+	 * Initialise market actors.
+	 * @param game       The game object.
+	 * @param screen     The screen object.
+	 */
+	public ResourceMarketActors(final RoboticonQuest game, ResourceMarketScreen screen) {
+		center();
+		Skin skin = game.skin;
+		this.game = game;
+		this.screen = screen;
+		this.stage = screen.getStage();
+    
+    	//Added by Christian Beddows
+		batch = (SpriteBatch) game.getBatch();
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/nightfacility.jpg")));
 		
+		// Modified by Josh Neil
+		createPlayerSelectDropDowns();
+		createPlayerToPlayerPriceAdjustableActor();
+		createResourceSelectBoxes();
+		createQuantityAdjustableActors();
+		createPlayerStatsLabels();
+		createBuyOrSellDropDown();
+		
+		// Not modified
+		// Create UI Components
+		phaseInfo = new Label("", game.skin);
+		nextButton = new TextButton("Next ->", game.skin);
+		marketStats = new Label("", game.skin);
+		// Adjust properties.
+		phaseInfo.setAlignment(Align.right);
+
+		// Add UI components to screen.
+		stage.addActor(phaseInfo);
+		stage.addActor(nextButton);
+		
+		// Added by Josh
+		marketTransactionWidget = createMarketTransactionWidget();
+		playerToPlayerTransactionWidget = createPlayerToPlayerTransactionWidget();
+		gamblingWidget = createGamblingWidget();
+		
+		addAllWidgetsToScreen();
+		
+		bindEvents();
+		widgetUpdate();
+	}
+	
+	/**
+	 * Creates the drop down menus that are used by players to select the resource that they want to buy/sell
+	 */
 	private void createResourceSelectBoxes(){
 		playerToPlayerResourceDropDown = new SelectBox<String>(game.skin);
 		marketResourceDropDown = new SelectBox<String>(game.skin);
@@ -47,46 +118,146 @@ public class ResourceMarketActors extends Table {
 		marketResourceDropDown.setItems(resources);
 	}
 	
-	private ResourceType stringToResource(String resourceString){
-		if(resourceString.toLowerCase().contains("food")){
-			return ResourceType.FOOD;
+	/**
+	 * Called whenever the sell button is clicked to carry out a sale from one player to another
+	 * <p>
+	 * If the sale is successful then both of the player's inventory data will be updated on screen.
+	 * If it is not successful then then a MessagePopUp is deployed that lets the players know why it failed.
+	 * </p>
+	 */
+	private void completePlayerToPlayerTransaction(){
+		int buyingPlayerIndex = playerToPlayerBuyerDropDown.getSelectedIndex();
+		int sellingPlayerIndex = playerToPlayerSellerDropDown.getSelectedIndex();
+		
+		
+		
+		Player buyingPlayer = game.playerList.get(buyingPlayerIndex);
+		Player sellingPlayer = game.playerList.get(sellingPlayerIndex);
+		
+		int quantity = playerToPlayerQuantityAdjustableActor.getValue();
+		
+		if(buyingPlayerIndex == sellingPlayerIndex || quantity == 0){
+			return;  // Player selling to itself or selling 0 of anything is pointless
 		}
-		else if(resourceString.toLowerCase().contains("energy")){
-			return ResourceType.ENERGY;
+		
+		String resourceString = playerToPlayerResourceDropDown.getSelected().toLowerCase();
+		ResourceType resource = StringUtil.stringToResource(resourceString);
+		
+		int pricePerUnit = playerToPlayerPriceAdjustableActor.getValue();
+		
+		PurchaseStatus purchaseStatus = sellingPlayer.sellResourceToPlayer(buyingPlayer, quantity, resource, pricePerUnit);
+		
+		switch(purchaseStatus){
+			case Success:
+				widgetUpdate();
+				break;
+			case FailPlayerNotEnoughMoney:
+				stage.addActor(new MessagePopUp("Not enough money!",
+						"Player "+Integer.toString(buyingPlayerIndex+1)+" does not have enough money to buy "
+						+Integer.toString(quantity)+" "+resourceString+
+						" for "+Integer.toString(quantity*pricePerUnit)+" credits!"));
+				break;
+			case FailPlayerNotEnoughResource:
+				stage.addActor(new MessagePopUp("Not enough "+resourceString+"!",
+						"Player "+Integer.toString(sellingPlayerIndex+1)+" has less than "
+						+Integer.toString(quantity)+" "+resourceString));
+				break;
+			default:
+				break;
 		}
-		else if(resourceString.toLowerCase().contains("ore")){
-			return ResourceType.ORE;
-		}
-		else{ // Shouldn't use this method for other kinds of resource
-			throw new InvalidResourceTypeException();
-		}
+		
+		
 	}
 	
+	/**
+	 * Called whenever the complete transaction button is clicked to carry out a transaction between the specified player and the market
+	 * <p>
+	 * If the sale is successful then the player's and market's inventory data will be updated on screen.
+	 * If it is not successful then then a MessagePopUp is deployed that lets the player know why it failed.
+	 * </p>
+	 */
 	private void completeMarketTransaction(){
 		int playerIndex = marketPlayerDropDown.getSelectedIndex();
-		int quantity = marketQuantityDropDown.getValue();
+		int quantity = marketQuantityAdjustableActor.getValue();
 		Player player = game.playerList.get(playerIndex);
-		ResourceType resource = stringToResource(playerToPlayerResourceDropDown.getSelected());
+		
+		// Converted to lower case as we don't want it to be upper case when its used in the pop up messages
+		String resourceString = marketResourceDropDown.getSelected().toLowerCase();
+		
+		ResourceType resource = StringUtil.stringToResource(resourceString);
 		if(playerIndex == -1 || resource == null){
 			return; // Not enough information has been supplied, cannot complete transaction
 		}
+		
 		if(marketBuyOrSellDropDown.getSelectedIndex() == 0){ // Buying is the first option
-			player.purchaseResourceFromMarket(quantity, game.market, resource);
+			PurchaseStatus purchaseStatus = player.purchaseResourceFromMarket(quantity, game.market, resource);
+			
+			// Not possible, with the current implementation for the player to attempt to buy more of a given resource than
+			// is available, left this code here in case that changes!
+			if(purchaseStatus== PurchaseStatus.FailMarketNotEnoughResource){
+				SoundEffects.error();
+				stage.addActor(new MessagePopUp("Not enough " + resourceString+"!",
+						"The market does not have enough " + resourceString+"!"));
+			}
+			else if(purchaseStatus== PurchaseStatus.FailPlayerNotEnoughMoney){
+				SoundEffects.error();
+				stage.addActor(new MessagePopUp("Not enough money!",
+						"Player "+Integer.toString(playerIndex+1)+" does not have enough money to buy "+
+						Integer.toString(quantity)+" "+resourceString+"!"));
+			}
 		}
 		else{ // Selling
+			
+			// Players can only sell as much as they have so there is no need to do anything else
 			player.sellResourceToMarket(quantity, game.market, resource);
 		}
 		widgetUpdate();
 	}
 	
-	private void createPlayerToPlayerPriceDropDown(){
-		playerToPlayerPriceDropDown = new AdjustableActor(game.skin , 1,1,50,"price", "complete transaction",false);		
+	/**
+	 * Called whenever a player has clicked the gamble button.
+	 * Creates a pop up window that displays the result and updates the inventory data that is isplayed on screen
+	 */
+	private void playerGambled(){
+		int playerIndex = gamblingPlayerDropDown.getSelectedIndex();
+		Player player = game.playerList.get(playerIndex);
+		int bet = gamblingAdjustableActor.getValue();
+		GamblingResult result = game.market.playerGamble(player, bet);
+		
+		if(result == GamblingResult.NOTENOUGHMONEY){
+			stage.addActor(new MessagePopUp("Not enough money!","Player "
+					+Integer.toString(playerIndex+1)+" does not have enough money to place that bet!"));
+		}
+		else if(result == GamblingResult.WON){
+			stage.addActor(new MessagePopUp("Player "+Integer.toString(playerIndex+1) + "won!",
+					"Player "+Integer.toString(playerIndex+1)+
+					" won!"));
+		}
+		else{
+			stage.addActor(new MessagePopUp("Player "+Integer.toString(playerIndex+1) + "lost!",
+					"Player "+Integer.toString(playerIndex+1)+
+					" lost!"));
+		}
+		widgetUpdate();
 	}
 	
-	private void createPlayerSelectBoxes(){
+	/**
+	 * Creates the AdjustableActor that is used to specify the price players want to buy for each unit
+	 * of a given resource.
+	 */
+	private void createPlayerToPlayerPriceAdjustableActor(){
+		playerToPlayerPriceAdjustableActor = new AdjustableActor(game.skin , 1,1,50);		
+	}
+	
+	/**
+	 * Creates the drop down menus that can be used to select the player(s) involved in a transaction with another player
+	 * or with the market
+	 */
+	private void createPlayerSelectDropDowns(){
 		playerToPlayerSellerDropDown = new SelectBox<String>(game.skin);
 		playerToPlayerBuyerDropDown = new SelectBox<String>(game.skin);
 		marketPlayerDropDown = new SelectBox<String>(game.skin);
+		gamblingPlayerDropDown = new SelectBox<String>(game.skin);
 		String[] players = new String[game.playerList.size()];
 		for(int player=0;player<game.playerList.size();player++){
 			players[player] = "Player "+Integer.toString(player+1);
@@ -94,19 +265,30 @@ public class ResourceMarketActors extends Table {
 		playerToPlayerSellerDropDown.setItems(players);
 		playerToPlayerBuyerDropDown.setItems(players);
 		marketPlayerDropDown.setItems(players);
+		gamblingPlayerDropDown.setItems(players);
 	}
 	
+	/**
+	 * Creates the drop down menu that is used to indicate whether a player wants to buy from the market or sell to it
+	 */
 	private void createBuyOrSellDropDown(){
 		marketBuyOrSellDropDown = new SelectBox<String>(game.skin);
 		String[] options = {"buy","sell"};
 		marketBuyOrSellDropDown.setItems(options);
 	}
 
-	private void createQuantityDropDowns(){
-		playerToPlayerQuantityDropDown = new AdjustableActor(game.skin,1,1,100, "quantity", "",false);
-		marketQuantityDropDown = new AdjustableActor(game.skin,1,1,100, "quantity", "",false);
+	/**
+	 * Creates the adjustable actors that are used to select the amount of a given resource that is to be traded
+	 * either between players or between a player and the market
+	 */
+	private void createQuantityAdjustableActors(){
+		playerToPlayerQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100);
+		marketQuantityAdjustableActor = new AdjustableActor(game.skin,0,0,100);
 	}
 	
+	/**
+	 * Updates the player inventory data (form all players) that is displayed on screen
+	 */
 	private void updatePlayerStatsLabels(){
 		for(int playerIndex =0;playerIndex<game.playerList.size();playerIndex++){
 			Player player = game.playerList.get(playerIndex);
@@ -119,6 +301,10 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
+	/**
+	 * Creates the the labels that are used to display the players inventory data on screen
+	 * (creates one for each player that is currently playing the game)
+	 */
 	private void createPlayerStatsLabels(){
 		int numberOfPlayers = game.playerList.size();
 		playerStatsLabels = new Label[numberOfPlayers];
@@ -127,6 +313,11 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
+	/**
+	 * Adds all of the player stats labels to the screen separated by a new row
+	 * (note must be called after {@link ResourceMarketActors#createPlayerStatsLabels()} 
+	 * and it will add as many labels as that method has created to the screen)
+	 */
 	private void addPlayerStatsLabels(){
 		for(int player=0; player<playerStatsLabels.length;player++){
 			add(playerStatsLabels[player]).left();
@@ -134,60 +325,76 @@ public class ResourceMarketActors extends Table {
 		}
 	}
 	
-	private void completePlayerToPlayerTransaction(){
-		// TODO: fill this out
-	}
-	
-	private void setPlayerToPlayerTransactionButtonBehaviour(TextButton button){
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				completePlayerToPlayerTransaction();
-			}
-		});
-	}
-	
-	private void setMarketTransactionButtonBehaviour(TextButton button){
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				completeMarketTransaction();
-			}
-		});
-	}
-	
+	/**
+	 * Creates a table that contains all of the widgets that the player uses to 
+	 * set up and carry out a transaction between themselves and another player.
+	 * <p>
+	 * All placed in a table so treated like 1 single widget by LibGDX
+	 * </p>
+	 * @return A table that contains all of the widgets that the player uses to set up and carry out a transaction between themselves and another player.
+	 */
 	private Table createPlayerToPlayerTransactionWidget(){
-		// All placed in a table so treated like 1 single widget for a clean layout
 		Table container = new Table();
-		container.add(playerToPlayerBuyerDropDown).padRight(10);
+		container.add(playerToPlayerSellerDropDown).padRight(10);
 		container.add(new Label("sell",game.skin)).padRight(10);
-		container.add(playerToPlayerQuantityDropDown).padRight(10);
+		container.add(playerToPlayerQuantityAdjustableActor).padRight(10);
 		container.add(playerToPlayerResourceDropDown).padRight(10);
 		container.add(new Label("to",game.skin)).padRight(10);
-		container.add(playerToPlayerSellerDropDown).padRight(10);
+		container.add(playerToPlayerBuyerDropDown).padRight(10);
 		container.add(new Label("for",game.skin)).padRight(10);
-		container.add(playerToPlayerPriceDropDown).padRight(10);
+		container.add(playerToPlayerPriceAdjustableActor).padRight(10);
 		container.add(new Label("money per unit",game.skin)).padRight(10);
-		TextButton playerToPlayerTransactionButton = new TextButton(" Sell ", game.skin);
-		setPlayerToPlayerTransactionButtonBehaviour(playerToPlayerTransactionButton);
+		playerToPlayerTransactionButton = new TextButton(" Sell ", game.skin);
 		container.add(playerToPlayerTransactionButton);
 		return container;
 	}
 	
+	/**
+	 * Creates a table that contains all of the widgets that the player uses to 
+	 * set up and carry out a transaction between themselves and the market.
+	 * <p>
+	 * All placed in a table so treated like 1 single widget by LibGDX
+	 * </p>
+	 * @return A table that contains all of the widgets that the player uses to set up and carry out a transaction between themselves and the market.
+	 */
 	private Table createMarketTransactionWidget(){
 		// All placed in a table so treated like 1 single widget for a clean layout
 		Table container = new Table();
 		container.add(marketPlayerDropDown).padRight(10);
 		container.add(marketBuyOrSellDropDown).padRight(10);
-		container.add(marketQuantityDropDown).padRight(10);
+		container.add(marketQuantityAdjustableActor).padRight(10);
 		container.add(marketResourceDropDown).padRight(10);
 		container.add(new Label("to / from the market",game.skin)).padRight(10);
-		TextButton marketTransactionButton = new TextButton(" Complete transaction ", game.skin);
-		setMarketTransactionButtonBehaviour(marketTransactionButton);
+		marketTransactionButton = new TextButton(" Complete transaction ", game.skin);
 		container.add(marketTransactionButton);
 		return container;
 	}
 	
+	/**
+	 * Creates a table that contains all of the widgets that the player uses to 
+	 * to gamble 100 of their credits.
+	 * <p>
+	 * All placed in a table so treated like 1 single widget by LibGDX
+	 * </p>
+	 * @return A table that contains all of the widgets that the player uses to to gamble 100 of their credits.
+	 */
+	private Table createGamblingWidget(){
+		Table container = new Table();
+		container.add(gamblingPlayerDropDown).padRight(10);
+		container.add(new Label("wishes to gamble",game.skin)).padRight(10);
+		gamblingAdjustableActor = new AdjustableActor(game.skin, 20, 1, 1000);
+		container.add(gamblingAdjustableActor).padRight(10);
+		container.add(new Label("credits",game.skin)).padRight(10);
+		gambleButton = new TextButton(" Place bet ",game.skin);
+		container.add(gambleButton);
+		return container;
+	}
+	
+	/**
+	 * Creates a table that is used to display the buying and selling prices of all the resources bought and sold by the market.
+	 * @param market The market in question
+	 * @return A table that is used to display the buying and selling prices of all the resources bought and sold by the market.
+	 */
 	private Table createMarketCostDisplayWidget(Market market){
 		Table marketCostsTable = new Table();
 		
@@ -215,52 +422,11 @@ public class ResourceMarketActors extends Table {
 	}
 	
 	/**
-	 * Initialise market actors.
-	 * @param game       The game object.
-	 * @param screen     The screen object.
+	 * Once all the UI widgets have been created this method is used
+	 * to add them all the the screen in the correct places
 	 */
-	public ResourceMarketActors(final RoboticonQuest game, ResourceMarketScreen screen) {
-		center();
-
-		Skin skin = game.skin;
-		this.game = game;
-		this.screen = screen;
-		this.stage = screen.getStage();
-		
-		// Modified by Josh Neil
-		createPlayerSelectBoxes();
-		createPlayerToPlayerPriceDropDown();
-		
-		createResourceSelectBoxes();
-		createQuantityDropDowns();
-		createPlayerStatsLabels();
-		
-		createBuyOrSellDropDown();
-		
-
-		// Create UI Components
-		phaseInfo = new Label("", game.skin);
-		nextButton = new TextButton("Next ->", game.skin);
-
-		marketStats = new Label("", game.skin);
-
-
-		// Adjust properties.
-		phaseInfo.setAlignment(Align.right);
-
-		// Add UI components to screen.
-		stage.addActor(phaseInfo);
-		stage.addActor(nextButton);
-
-
-		// Setup UI Layout.
-		// Row: Player and Market Stats.
-		
-		Table marketTransactionWidget = createMarketTransactionWidget();
-		Table playerToPlayerTransactionWidget = createPlayerToPlayerTransactionWidget();
-		
-		
-		addPlayerStatsLabels();
+	private void addAllWidgetsToScreen(){
+		addPlayerStatsLabels(); // Added by Josh
 		row();
 		add(marketStats).left().padBottom(20);
 		row();
@@ -268,40 +434,57 @@ public class ResourceMarketActors extends Table {
 		row();
 		add(playerToPlayerTransactionWidget).left().padBottom(30);
 		row();
-		add(marketTransactionWidget).left();
-		
-		
-		bindEvents(marketTransactionWidget,playerToPlayerTransactionWidget);
-		widgetUpdate();
+		add(marketTransactionWidget).left().padBottom(45);
+		row();
+		add(gamblingWidget).left();
+	}
+
+	/**
+	 * returns the background image
+	 * @return Image
+	 */
+	public Image getBackgroundImage() {
+		return backgroundImage;
 	}
 	
+	/**
+	 * Sets the maximum value that can be selected using the market quantity adjustable actor
+	 * if the marketBuyOrSellDropDown is set to buy then the value is the number of 
+	 * the resource selected using the marketResourceDropDown otherwise it is the number
+	 * of the given resource that the selected player is in possession of.
+	 */
 	private void updateMaxMarketQuantity(){
-		ResourceType resource = stringToResource(marketResourceDropDown.getSelected());
+		ResourceType resource = StringUtil.stringToResource(marketResourceDropDown.getSelected());
 		if(marketBuyOrSellDropDown.getSelectedIndex() == 0){ // Buying is the first option
 			
-			marketQuantityDropDown.setMax(game.market.getResource(resource));
+			marketQuantityAdjustableActor.setMax(game.market.getResource(resource));
 		}
 		else{
 			int playerIndex = marketPlayerDropDown.getSelectedIndex();
 			Player player = game.playerList.get(playerIndex);
-			marketQuantityDropDown.setMax(player.getResource(resource));			
+			marketQuantityAdjustableActor.setMax(player.getResource(resource));			
 		}
 	}
 	
+	/**
+	 * Sets the maximum value that can be selected using the playerToPlayerQuantityAdjustableActor
+	 * to the number of the chosen resource that the selling player has in their possession
+	 */
 	private void updateMaxPlayerQuantity(){
-		ResourceType resource = stringToResource(playerToPlayerResourceDropDown.getSelected());
+		ResourceType resource = StringUtil.stringToResource(playerToPlayerResourceDropDown.getSelected());
 		int playerIndex = playerToPlayerSellerDropDown.getSelectedIndex();
 		Player player = game.playerList.get(playerIndex);
-		playerToPlayerQuantityDropDown.setMax(player.getResource(resource));
+		playerToPlayerQuantityAdjustableActor.setMax(player.getResource(resource));
 	}
 
 	/**
-	 * Bind button events.
+	 * Sets the action that is performed when each of the on screen buttons is clicked
 	 */
-	private void bindEvents(Table marketTransactionWidget, Table playerToPlayerTransactionWidget) {
+	private void bindEvents() {
 		nextButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
 				game.nextPhase();
 			}
 		});
@@ -309,28 +492,53 @@ public class ResourceMarketActors extends Table {
 		marketTransactionWidget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				SoundEffects.click();
 				updateMaxMarketQuantity();
-				System.out.println("clicked");
 			}
 
 		});
 		
-		playerToPlayerTransactionWidget.addListener(new ClickListener() {
+		playerToPlayerTransactionWidget.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				SoundEffects.click();
+				updateMaxPlayerQuantity();
+			}
+		});
+		
+		playerToPlayerTransactionButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				updateMaxPlayerQuantity();
+				SoundEffects.click();
+				completePlayerToPlayerTransaction();
+			}
+		});
+		
+		marketTransactionButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
+				completeMarketTransaction();
+			}
+		});
+		
+		gambleButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				SoundEffects.click();
+				playerGambled();
 			}
 		});
 		
 	}
 
+	// Josh changed to private
 	/**
-	 * Updates all widgets on screen
+	 * Updates all widgets on screen with new data
 	 */
-	public void widgetUpdate() {
+	private void widgetUpdate() {
 		// update player stats, phase text, and the market stats.
 		String phaseText =
-				"Player " + (game.getPlayerInt() + 1) + "; " +
 				"Phase " + game.getPhase() + " - " + game.getPhaseString();
 
 		String marketStatText = "Market      "+
@@ -341,7 +549,8 @@ public class ResourceMarketActors extends Table {
 		phaseInfo.setText(phaseText);
 		updatePlayerStatsLabels();
 		marketStats.setText(marketStatText);
-
+		updateMaxMarketQuantity();
+		updateMaxPlayerQuantity();
 	}
 
 	/**
@@ -351,6 +560,11 @@ public class ResourceMarketActors extends Table {
 	 * @param height   The new Height.
 	 */
 	public void screenResize(float width, float height) {
+		//Added by Christian Beddows
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
+
 		// Bottom Left
 		phaseInfo.setPosition(0, height - 20);
 		phaseInfo.setWidth(width - 10);

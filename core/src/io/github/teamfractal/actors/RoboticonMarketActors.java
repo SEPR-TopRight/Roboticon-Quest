@@ -2,6 +2,7 @@ package io.github.teamfractal.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,10 +14,19 @@ import io.github.teamfractal.entity.Market;
 import io.github.teamfractal.entity.Roboticon;
 import io.github.teamfractal.entity.enums.ResourceType;
 import io.github.teamfractal.screens.RoboticonMarketScreen;
+import io.github.teamfractal.util.SoundEffects;
 import io.github.teamfractal.util.MessagePopUp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+/**
+ * Creates all of the UI widgets that are placed on the RoboticonMarketScreen
+ */
+
+// Please note: this class is a mess and if Top Right Corner had the time they would
+// have refactored it. However they felt it better to focus their efforts on improving
+// the automated testing and implementing new features.
 
 public class RoboticonMarketActors extends Table {
 	private RoboticonQuest game;
@@ -33,9 +43,15 @@ public class RoboticonMarketActors extends Table {
 	private static final Texture no_cust_texture;
 	private static final Texture energy_texture;
 	private static final Texture ore_texture;
-	//added by andrew
+	//added by andrew - used to store the market image for a food roboticon
 	private static final Texture food_texture;
 	private static final Texture no_robotic_texture;
+
+	private Image backgroundImage;
+	private SpriteBatch batch;
+	private float scaleFactorX;
+	private float scaleFactorY;
+	private SoundEffects gameAudio;
 
 	private ArrayList<Roboticon> roboticons = new ArrayList<Roboticon>();
 
@@ -44,28 +60,35 @@ public class RoboticonMarketActors extends Table {
 		energy_texture = new Texture(Gdx.files.internal("roboticon_images/robot_energy.png"));
 		ore_texture = new Texture(Gdx.files.internal("roboticon_images/robot_ore.png"));
 		no_robotic_texture = new Texture(Gdx.files.internal("roboticon_images/no_roboticons.png"));
-		//added by andrew
+		//added by andrew - assigning an image to the market image for a food roboticon
 		food_texture = new Texture(Gdx.files.internal("roboticon_images/robot_food.png"));
 	}
 
-	// Josh Neil modified constructor to accept market object
-	public RoboticonMarketActors(final RoboticonQuest game, RoboticonMarketScreen screen, final Market market) {
+	public RoboticonMarketActors(final RoboticonQuest game, RoboticonMarketScreen screen) {
 		this.game = game;
 		this.screen = screen;
 		final Stage stage = screen.getStage(); // Added by Josh Neil
+		
+		final Market market = game.market; // Added by Josh Neil
 
 		this.roboticonID = new Label("", game.skin);
 		this.marketStats = new Label("", game.skin);
 
 		widgetUpdate();
-		
+
+		//Added by Christian Beddows
+		batch = (SpriteBatch) game.getBatch();
+		backgroundImage = new Image(new Texture(Gdx.files.internal("background/robotfactory.jpg")));
+		gameAudio = new SoundEffects();
+
 		// Added by Josh Neil so players can make the market produce a roboticon
 		final TextButton produceRoboticonButton = new TextButton("Produce roboticon", game.skin);
 		produceRoboticonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				
+				gameAudio.click();
 				if(!market.attemptToProduceRoboticon()){
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough ore!","The market does not have enough ore to produce a roboticon!"));
 				}
 				else{
@@ -87,6 +110,7 @@ public class RoboticonMarketActors extends Table {
 		addRoboticonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				roboticonAmount += 1;
 				lblRoboticonAmount.setText(roboticonAmount.toString());
 			}
@@ -97,6 +121,7 @@ public class RoboticonMarketActors extends Table {
 		subRoboticonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (roboticonAmount > 0) {
 					roboticonAmount -= 1;
 					lblRoboticonAmount.setText(roboticonAmount.toString());
@@ -109,9 +134,10 @@ public class RoboticonMarketActors extends Table {
 		buyRoboticonsButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				
+				gameAudio.click();
 				//added a popup if player doesnt have enough money to buy roboticons - ben
 				if (game.getPlayer().getMoney() < (roboticonAmount*game.market.getSellPrice(ResourceType.ROBOTICON))){
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to buy these roboticons."));
 				}
 				else{
@@ -137,6 +163,7 @@ public class RoboticonMarketActors extends Table {
 		moveLeftRoboticonInventoryBtn.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (currentlySelectedRoboticonPos > 0) {
 					currentlySelectedRoboticonPos--;
 					setCurrentlySelectedRoboticon(currentlySelectedRoboticonPos);
@@ -148,6 +175,7 @@ public class RoboticonMarketActors extends Table {
 		moveRightRoboticonInventoryBtn.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (currentlySelectedRoboticonPos < roboticons.size() - 1) {
 					currentlySelectedRoboticonPos++;
 					setCurrentlySelectedRoboticon(currentlySelectedRoboticonPos);
@@ -161,7 +189,7 @@ public class RoboticonMarketActors extends Table {
 
 		// Drop down menu to select how to customise the selected roboticion
 		final SelectBox<String> customisationDropDown = new SelectBox<String>(game.skin);
-		//modified by andrew
+		//modified by andrew - added food as a possible customisation
 		String[] customisations = {"Energy", "Ore", "Food"};
 		customisationDropDown.setItems(customisations);
 
@@ -170,6 +198,7 @@ public class RoboticonMarketActors extends Table {
 		buyCustomisationButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				if (-1 == currentlySelectedRoboticonPos) {
 					// nothing selected.
 					return;
@@ -177,7 +206,7 @@ public class RoboticonMarketActors extends Table {
 				HashMap<String, ResourceType> converter = new HashMap<String, ResourceType>();
 				converter.put("Energy", ResourceType.ENERGY);
 				converter.put("Ore", ResourceType.ORE);
-				//added by andrew
+				//added by andrew - ensure the option for food appears during this creen
 				converter.put("Food", ResourceType.FOOD);
 				Roboticon roboticonToCustomise = roboticons.get(currentlySelectedRoboticonPos);
 
@@ -185,6 +214,7 @@ public class RoboticonMarketActors extends Table {
 				//added a popup if player doesnt have enough money to customise roboticons - ben
 
 				if (game.getPlayer().getMoney() < market.getSellPrice(ResourceType.CUSTOMISATION)){
+					SoundEffects.error();
 					stage.addActor(new MessagePopUp("Not enough money!","You dont have enough Money to customise theese roboticons."));
 
 				}
@@ -196,6 +226,7 @@ public class RoboticonMarketActors extends Table {
 		nextButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				gameAudio.click();
 				game.nextPhase();
 			}
 		});
@@ -281,10 +312,30 @@ public class RoboticonMarketActors extends Table {
 		add();
 		add();
 		add();
-		add(nextButton).padTop(40);
+		add(nextButton).padTop(40).right();
 		
 	
 
+	}
+
+	/**
+	 * returns the background image
+	 * @return Image
+	 */
+	public Image getBackgroundImage() {
+		return backgroundImage;
+	}
+
+	/**
+	 * Method to scale the background
+	 * @author cb1423
+	 * @param width
+	 * @param height
+	 */
+	public void resizeScreen(float width, float height) {
+		scaleFactorX = width/backgroundImage.getWidth();
+		scaleFactorY = height/backgroundImage.getHeight();
+		backgroundImage.setScale(scaleFactorX,scaleFactorY);
 	}
 
 	public String padZero(int number, int length) {
@@ -307,7 +358,7 @@ public class RoboticonMarketActors extends Table {
 				case ENERGY:
 					roboticonTexture = energy_texture;
 					break;
-				//added by andrew
+				//added by andrew - change roboticon texture to the food roboticon texture
 				case FOOD:
 					roboticonTexture = food_texture;
 					break;
@@ -339,10 +390,11 @@ public class RoboticonMarketActors extends Table {
 
 		// Draws turn and phase info on screen
 		if (this.topText != null) this.topText.remove();
-		String phaseText = "Player " + (game.getPlayerInt() + 1) + "; Phase " + game.getPhase();
+		String phaseText = "Player " + (game.getPlayerInt() + 1) + "; Phase " + game.getPhase() + " - " + game.getPhaseString();
+
 		this.topText = new Label(phaseText, game.skin);
 		topText.setWidth(120);
-		topText.setPosition(screen.getStage().getWidth() / 2 - 40, screen.getStage().getViewport().getWorldHeight() - 20);
+		topText.setPosition(screen.getStage().getWidth() -(topText.getPrefWidth()+10)	, screen.getStage().getViewport().getWorldHeight() - 20);
 		screen.getStage().addActor(topText);
 
 		// Draws player stats on screen
