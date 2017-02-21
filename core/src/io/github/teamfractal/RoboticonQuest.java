@@ -84,7 +84,8 @@ public class RoboticonQuest extends Game {
 		mainMenuScreen = new MainMenuScreen(this);
 
 		setScreen(mainMenuScreen);
-
+		
+		// Added by Christian Beddows to implement the background music
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/roundone.wav"));
 		gameMusic.play();
 		gameMusic.setLooping(true);
